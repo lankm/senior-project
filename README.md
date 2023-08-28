@@ -5,4 +5,4 @@
 - Jacob Holz (first commit)
 - Gilbert Lavin
 - Parker Steach (first commit)
-- Nam Huynh
+- Nam Huynh (1st commit)
