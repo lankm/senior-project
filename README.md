@@ -3,6 +3,6 @@
 ### Team members
 - Landon Moon (first commit)
 - Jacob Holz (first commit)
-- Gilbert Lavin
+- Gilbert Lavin (commit first)
 - Parker Steach (first commit)
 - Nam Huynh (1st commit)
