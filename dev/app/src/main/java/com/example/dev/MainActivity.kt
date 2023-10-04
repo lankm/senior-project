@@ -42,25 +42,52 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable("contacts") {
                             val viewModel = it.sharedViewModel<SampleViewModel>(navController = navController)
+
+                            Column {
+                                Text("Contacts")
+                                Button(onClick = {
+                                    navController.navigate("messages") {
+                                        popUpTo("comm") {
+                                            inclusive = true } } } ) {}
+                            }
                         }
                         composable("messages") {
                             val viewModel = it.sharedViewModel<SampleViewModel>(navController = navController)
+
+                            Column {
+                                Text("Messages")
+                                Button(onClick = {
+                                    navController.navigate("settings") {
+                                        popUpTo("comm") {
+                                            inclusive = true } } } ) {}
+                            }
                         }
                         composable("settings") {
                             val viewModel = it.sharedViewModel<SampleViewModel>(navController = navController)
+
+                            Column {
+                                Text("Settings")
+                                Button(onClick = {
+                                    navController.navigate("contacts") {
+                                        popUpTo("comm") {
+                                            inclusive = true } } } ) {}
+                            }
                         }
                     }
                     composable("login") {
-
-                        Button(onClick = {
-                            navController.navigate("comm") {
-                                popUpTo("login") {
-                                    inclusive = true
+                        Column {
+                            Text("Login")
+                            Button(onClick = {
+                                navController.navigate("comm") {
+                                    popUpTo("login") {
+                                        inclusive = true
+                                    }
                                 }
-                            }
-                        }) {
+                            }) {
 
+                            }
                         }
+
                     }
                 }
             }
