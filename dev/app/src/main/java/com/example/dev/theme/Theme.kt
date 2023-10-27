@@ -15,13 +15,13 @@ private val DarkColors = darkColors(
     secondaryVariant = Color.DarkGray,
 
     background = Color.White,
-    surface = Color.Gray,
+    surface = Color.LightGray,
     error = Color.Red,
 
-    onPrimary = Color.Black,
-    onSecondary = Color.White,
-    onBackground = Color.White,
-    onSurface = Color.White,
+    onPrimary = Color.White,
+    onSecondary = Color.Black,
+    onBackground = Color.Gray,
+    onSurface = Color.Black,
     onError = Color.Red,
 )
 
@@ -33,13 +33,13 @@ private val LightColors = lightColors(
     secondaryVariant = Color.DarkGray,
 
     background = Color.White,
-    surface = Color.Gray,
+    surface = Color.LightGray,
     error = Color.Red,
 
-    onPrimary = Color.Black,
-    onSecondary = Color.White,
-    onBackground = Color.Black,
-    onSurface = Color.White,
+    onPrimary = Color.White,
+    onSecondary = Color.Black,
+    onBackground = Color.Gray,
+    onSurface = Color.Black,
     onError = Color.Red,
 )
 

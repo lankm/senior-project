@@ -3,7 +3,9 @@ package com.example.dev
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Badge
 import androidx.compose.material.BadgedBox
 import androidx.compose.material.BottomNavigation
@@ -39,8 +41,10 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
 
                 Scaffold (
-                    content = { it  // TODO: learn why this is forced
-                         Navigation(navController = navController)
+                    content = { innerPadding ->
+                        Box(modifier = Modifier.padding(innerPadding)) {
+                            Navigation(navController = navController)
+                        }
                     },
                     bottomBar = {
                         BottomNavigationBar(
