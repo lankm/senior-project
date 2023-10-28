@@ -7,7 +7,7 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-// TODO: Do a theme refactor
+// TODO: Do a big theme refactor
 private val DarkColors = darkColors(
     primary = Color.Blue,
     primaryVariant = Color.Cyan,

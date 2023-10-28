@@ -1,26 +1,22 @@
 package com.example.dev.views.messages
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.dev.models.Contact
 import com.example.dev.models.Message
-import com.example.dev.views.messages.history.MessageBox
+import com.example.dev.views.contacts.sample_contacts
 import com.example.dev.views.messages.history.MessageHistory
 import java.time.LocalTime
 
 @Composable
-fun MessagesScreen(recipient: String, messageHistory: List<Message>) {
+fun MessagesScreen(contact: Contact, messageHistory: List<Message>) {
     Scaffold(
         topBar = {
-            MessagesTopBar(
-                recipient = recipient
-            )
+            MessagesTopBar(contact)  //TODO: combine into a single scaffold topbar with contacts screen
         },
         content = { innerPadding ->
             Box(modifier = Modifier.padding(innerPadding)) {
@@ -71,5 +67,5 @@ val sample_messages = listOf(
 @Preview
 @Composable
 fun MessagesScreenPreview() {
-    MessagesScreen("Landon Moon", sample_messages)
+    MessagesScreen(sample_contacts[0], sample_messages)
 }
