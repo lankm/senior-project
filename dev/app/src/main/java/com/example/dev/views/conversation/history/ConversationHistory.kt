@@ -1,24 +1,17 @@
-package com.example.dev.views.messages.history
+package com.example.dev.views.conversation.history
 
-import android.content.ClipData.Item
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.dev.models.Message
-import com.example.dev.views.messages.MessagesTopBar
-import com.example.dev.views.messages.sample_messages
+import com.example.dev.views.conversation.sample_messages
 
 
 @Composable
-fun MessageHistory(messages: List<Message>) {
+fun ConversationHistory(messages: List<Message>) {
     val scrollState = rememberLazyListState(messages.size - 1)
 
     // Create the LazyColumn
@@ -36,6 +29,6 @@ fun MessageHistory(messages: List<Message>) {
 
 @Preview
 @Composable
-fun MessageHistoryPreview() {
-    MessageHistory(sample_messages)
+fun ConversationHistoryPreview() {
+    ConversationHistory(sample_messages)
 }

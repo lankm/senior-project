@@ -1,4 +1,4 @@
-package com.example.dev.views.messages
+package com.example.dev.views.conversation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -9,18 +9,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.dev.models.Contact
 import com.example.dev.models.Message
 import com.example.dev.views.contacts.sample_contacts
-import com.example.dev.views.messages.history.MessageHistory
+import com.example.dev.views.conversation.history.ConversationHistory
 import java.time.LocalTime
 
 @Composable
-fun MessagesScreen(contact: Contact, messageHistory: List<Message>) {
+fun ConversationScreen(contact: Contact, messageHistory: List<Message>) {
     Scaffold(
-        topBar = {
-            MessagesTopBar(contact)  //TODO: combine into a single scaffold topbar with contacts screen
-        },
         content = { innerPadding ->
             Box(modifier = Modifier.padding(innerPadding)) {
-                MessageHistory(messageHistory)
+                ConversationHistory(messageHistory)
             }
         },
         bottomBar = {
@@ -67,5 +64,5 @@ val sample_messages = listOf(
 @Preview
 @Composable
 fun MessagesScreenPreview() {
-    MessagesScreen(sample_contacts[0], sample_messages)
+    ConversationScreen(sample_contacts[0], sample_messages)
 }

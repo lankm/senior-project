@@ -1,35 +1,19 @@
 package com.example.dev.views.contacts
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.dev.R
 import com.example.dev.models.Contact
-import com.example.dev.views.messages.ContactsTopBar
-import com.example.dev.views.messages.MessageInput
-import com.example.dev.views.messages.MessagesTopBar
-import com.example.dev.views.messages.history.MessageHistory
 
 @Composable
-fun ContactsScreen(contacts: List<Contact>) {
-    Scaffold(
-        topBar = {
-            ContactsTopBar() //TODO: combine into a single scaffold topbar with messages screen
-        },
-        content = { innerPadding ->
-            Box(modifier = Modifier.padding(innerPadding)) {
-                ContactList(contacts)
-            }
-        }
-    )
-
-
+fun ContactsScreen(navController: NavController, contacts: List<Contact>) {
+    ContactList(navController, contacts)
 }
 
 // TODO: Delete this
@@ -50,5 +34,8 @@ val sample_contacts = listOf(
 @Preview
 @Composable
 fun ContactsScreenPreview() {
-    ContactsScreen(sample_contacts)
+    ContactsScreen(
+        navController = rememberNavController(),
+        contacts = sample_contacts
+    )
 }

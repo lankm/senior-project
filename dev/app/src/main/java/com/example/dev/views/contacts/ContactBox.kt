@@ -2,11 +2,13 @@ package com.example.dev.views.contacts
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -27,7 +29,7 @@ import com.example.dev.models.Contact
 fun ContactBox(contact: Contact) {
     Row(verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .padding(5.dp)
+            .height(50.dp)
     ) {
         // pfp
         Image(
@@ -35,12 +37,15 @@ fun ContactBox(contact: Contact) {
             contentDescription = "My Image",
             modifier = Modifier
                 .clip(CircleShape)
-                .size(50.dp)
+                .fillMaxHeight()
         )
         
         Spacer(modifier = Modifier.padding(horizontal = 5.dp))
         
-        Column() {
+        Column(
+            verticalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxHeight()
+        ) {
             // Name
             Text(
                 text = contact.name,

@@ -1,59 +1,49 @@
-package com.example.dev.views.messages
+package com.example.dev.views
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.dev.R
-import com.example.dev.models.Contact
-import com.example.dev.views.contacts.ContactBox
-import com.example.dev.views.contacts.sample_contacts
+import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.dev.views.contacts.ContactsTopBar
+import com.example.dev.views.contacts.ConversationTopBar
 
-// TODO: this is temporary, refactor by combining contacts/messages scaffolds
 @Composable
-fun MessagesTopBar(contact: Contact) {
+fun TopBar(navController: NavController) {
     Row(verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colors.surface)
+            .height(60.dp)
             .padding(5.dp)
     ) {
-        Icon(
-            imageVector = Icons.Default.ArrowBack,
-            contentDescription = "Back to contacts",
-        )
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
 
-        ContactBox(contact)
-
-        Icon(
-            imageVector = Icons.Default.Menu,
-            contentDescription = "Conversation settings",
-        )
+        when ( navBackStackEntry?.destination?.route ) {
+            "contacts" -> {
+                ContactsTopBar(navController)
+            }
+            "conversation" -> {
+                ConversationTopBar(navController)
+            }
+        }
     }
-}
-
-
-
-@Preview
-@Composable
-fun MessagesTopBarPreview() {
-    MessagesTopBar(sample_contacts[0])
 }
