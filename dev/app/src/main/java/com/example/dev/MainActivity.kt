@@ -31,6 +31,7 @@ import androidx.navigation.*
 import com.example.dev.models.BottomNavItem
 import com.example.dev.views.contacts.ContactsScreen
 import com.example.dev.views.messages.MessagesScreen
+import com.example.dev.views.messages.sample_messages
 import com.example.dev.views.settings.SettingsScreen
 
 class MainActivity : ComponentActivity() {
@@ -84,7 +85,7 @@ fun Navigation(navController: NavHostController) {
             ContactsScreen()
         }
         composable("messages") {
-            MessagesScreen()
+            MessagesScreen("Jacob Holz", sample_messages)
         }
         composable("settings") {
             SettingsScreen()

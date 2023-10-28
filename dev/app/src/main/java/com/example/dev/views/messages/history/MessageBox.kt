@@ -1,15 +1,12 @@
-package com.example.dev.views.messages
+package com.example.dev.views.messages.history
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -51,31 +48,34 @@ fun MessageBox(content: String,
                                                     else MaterialTheme.colors.onSurface
     // TODO: change all sp/dp values to depend on the phone model
     val fontsize = 15.sp
+    val padding = 10.dp
 
     CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
         Row(
             verticalAlignment = Alignment.CenterVertically, modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp)
+                .padding(padding)
         ) {
             // message contents
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp)) // change if wanted
-                    .background(backgroundColor)
-                    .widthIn(0.dp, 250.dp)
+                    .background(
+                        shape = RoundedCornerShape(padding),
+                        color = backgroundColor
+                    ).weight(
+                        weight = 1.0f,  // limit max size
+                        fill = false  // only grow if needed
+                    )
             ) {
                 Text(
                     text = content,
                     fontSize = fontsize,
                     textAlign = TextAlign.Left,
                     color = textColor,
-                    modifier = Modifier.padding(10.dp)
+                    modifier = Modifier.padding(padding)
                 )
             }
-
-            Spacer(modifier = Modifier.width(4.dp))
 
             // time stamp
             Column(
@@ -87,7 +87,7 @@ fun MessageBox(content: String,
                     fontSize = fontsize,
                     textAlign = if (layoutDirection == LayoutDirection.Ltr) TextAlign.Left else TextAlign.Right,
                     color = MaterialTheme.colors.onBackground,
-                    modifier = Modifier.padding(10.dp)
+                    modifier = Modifier.padding(padding)
                 )
             }
         }
