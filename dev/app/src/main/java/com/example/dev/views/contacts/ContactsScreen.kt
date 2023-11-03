@@ -13,7 +13,12 @@ import com.example.dev.models.Contact
 
 @Composable
 fun ContactsScreen(navController: NavController, contacts: List<Contact>) {
-    ContactList(navController, contacts)
+    Scaffold (
+        topBar = { ContactsTopBar(navController) },
+        content = { innerPadding -> Box(modifier = Modifier.padding(innerPadding)) {
+            ContactList(navController, contacts)
+        }}
+    )
 }
 
 // TODO: Delete this

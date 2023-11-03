@@ -22,20 +22,13 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dev.models.Message
+import com.example.dev.models.parseDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun MessageBox(message: Message) {
-    MessageBox(
-        content = message.content,
-        time = message.time,
-        recieved = message.recieved
-    )
-}
-@Composable
 fun MessageBox(content: String,
-               time: LocalTime,
+               time: Long,
                recieved: Boolean
 ) {
     // modifier values
@@ -80,9 +73,8 @@ fun MessageBox(content: String,
             Column(
                 verticalArrangement = Arrangement.Bottom,
             ) {
-                val formatter = DateTimeFormatter.ofPattern("h:mm\na")
                 Text(
-                    text = time.format(formatter),
+                    text = time.parseDate().split(" ")[1],
                     fontSize = fontsize,
                     textAlign = if (layoutDirection == LayoutDirection.Ltr) TextAlign.Left else TextAlign.Right,
                     color = MaterialTheme.colors.onBackground,
@@ -104,5 +96,5 @@ fun MessagesBoxPreview() {
         recieved = true
     )
 
-    MessageBox(message)
+//    MessageBox(message)
 }

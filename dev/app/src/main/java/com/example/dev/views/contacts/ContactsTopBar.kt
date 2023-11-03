@@ -1,5 +1,11 @@
 package com.example.dev.views.contacts
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -9,40 +15,46 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 
 @Composable
 fun ContactsTopBar(navController: NavController) {
-    // No composable wrapper needed. Implemented in TopBar.kt
-    
-    // Left IconButton
-    IconButton(
-        onClick = {
-            // TODO: implement adding a contact. probably a modal
-        },
-        modifier = Modifier.size(48.dp)
+    Row(verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colors.surface)
+            .height(60.dp)
+            .padding(5.dp)
     ) {
-        Icon(
-            imageVector = Icons.Default.Add,
-            contentDescription = "Add contact",
-        )
-    }
+        // Left IconButton
+        IconButton(
+            onClick = { /* TODO: implement adding a contact. probably a modal */ },
+            modifier = Modifier.size(48.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Add contact",
+            )
+        }
 
-    // Center content
-    Text(text = "ESMS", color = MaterialTheme.colors.onSurface)
+        // Center content
+        Text(text = "ESMS", color = MaterialTheme.colors.onSurface)
 
-    // Right IconButton
-    IconButton(
-        onClick = {
-            // TODO: implement global settings. probably a right drawer
-        },
-        modifier = Modifier.size(48.dp)
-    ) {
-        Icon(
-            imageVector = Icons.Default.Menu,
-            contentDescription = "Global settings",
-        )
+        // Right IconButton
+        IconButton(
+            onClick = { /* TODO: implement global settings. probably a right drawer */ },
+            modifier = Modifier.size(48.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Menu,
+                contentDescription = "Global settings",
+            )
+        }
     }
 }

@@ -12,11 +12,11 @@ import com.example.dev.theme.EsmsTheme
 
 import androidx.navigation.compose.*
 import androidx.navigation.*
-import com.example.dev.views.TopBar
+import com.example.dev.views.AuthScreen
+import com.example.dev.views.PermissionsScreen
 import com.example.dev.views.contacts.ContactsScreen
 import com.example.dev.views.contacts.sample_contacts
 import com.example.dev.views.conversation.ConversationScreen
-import com.example.dev.views.conversation.sample_messages
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,35 +24,45 @@ class MainActivity : ComponentActivity() {
         setContent {
             EsmsTheme {
                 val navController = rememberNavController()
-                Scaffold (
-                    topBar = {
-                        TopBar(navController)
-                    },
-                    content = { innerPadding ->
-                        Box(modifier = Modifier.padding(innerPadding)) {
-                            Navigation(navController = navController)
-                        }
-                    }
-                )
+                Navigation(navController)
             }
         }
     }
 }
 
+// NavGraph
 @Composable
 fun Navigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "contacts") {
-        composable("contacts") {
-            ContactsScreen(
-                navController = navController,
-                contacts = sample_contacts
+    NavHost(navController = navController, startDestination = "permissions") {
+        composable("permissions") {
+            PermissionsScreen(
+                onPermissionGranted = {
+                    navController.popBackStack()
+                    navController.navigate("auth")
+                }
             )
         }
-        composable("conversation") {
-            ConversationScreen(
-                contact = sample_contacts[0],
-                messageHistory = sample_messages
+        composable("auth") {
+            AuthScreen(
+                onAuthGranted = {
+                    navController.popBackStack()
+                    navController.navigate("application")
+                }
             )
+        }
+        navigation(startDestination = "contacts", route = "application") {
+            composable("contacts") {
+                ContactsScreen(
+                    navController = navController,
+                    contacts = sample_contacts
+                )
+            }
+            composable("conversation") {
+                ConversationScreen(
+                    navController = navController,
+                    contact = sample_contacts[0]
+                )
+            }
         }
     }
 }
