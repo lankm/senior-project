@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.dev"
+    namespace = "com.esms"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.dev"
+        applicationId = "com.esms"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
