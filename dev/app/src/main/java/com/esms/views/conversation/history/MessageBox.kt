@@ -21,9 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.esms.models.Message
 import com.esms.models.parseDate
-import java.time.LocalTime
 
 @Composable
 fun MessageBox(content: String,
@@ -89,11 +87,5 @@ fun MessageBox(content: String,
 @Preview
 @Composable
 fun MessagesBoxPreview() {
-    val message = Message(
-        content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        time = LocalTime.now(),
-        recieved = true
-    )
-
 //    MessageBox(message)
 }

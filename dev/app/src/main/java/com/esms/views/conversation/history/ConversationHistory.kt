@@ -59,7 +59,7 @@ fun ConversationHistory() {
                         MessageBox(
                             content = it.body,
                             time = it.date,
-                            recieved = true
+                            recieved = false
                         )
                     }
                 }

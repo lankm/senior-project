@@ -8,8 +8,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.esms.models.Contact
-import com.esms.views.contacts.sample_contacts
 import com.esms.views.conversation.history.ConversationHistory
 
 @Composable

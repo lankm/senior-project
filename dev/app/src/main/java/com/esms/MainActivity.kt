@@ -11,7 +11,6 @@ import androidx.navigation.*
 import com.esms.views.AuthScreen
 import com.esms.views.PermissionsScreen
 import com.esms.views.contacts.ContactsScreen
-import com.esms.views.contacts.sample_contacts
 import com.esms.views.conversation.ConversationScreen
 
 class MainActivity : ComponentActivity() {

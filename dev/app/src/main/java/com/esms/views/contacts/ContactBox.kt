@@ -18,7 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.esms.models.Contact
+import com.esms.R
 import com.esms.models.PhoneContact
 
 @Composable
@@ -62,5 +62,11 @@ fun ContactBox(contact: PhoneContact) {
 @Preview
 @Composable
 fun ContactBoxPreview() {
-//    ContactBox(sample_contacts[0])
+    ContactBox(sampleContact)
 }
+//TODO remove this
+val sampleContact = PhoneContact(
+    pfp = R.drawable.ic_launcher_background,
+    name = "Landon Moon",
+    number = "817-694-6767"
+)
