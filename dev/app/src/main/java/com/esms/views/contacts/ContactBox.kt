@@ -19,9 +19,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.esms.models.Contact
+import com.esms.models.PhoneContact
 
 @Composable
-fun ContactBox(contact: Contact) {
+fun ContactBox(contact: PhoneContact) {
     Row(verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .height(50.dp)
@@ -61,5 +62,5 @@ fun ContactBox(contact: Contact) {
 @Preview
 @Composable
 fun ContactBoxPreview() {
-    ContactBox(sample_contacts[0])
+//    ContactBox(sample_contacts[0])
 }

@@ -49,14 +49,12 @@ fun Navigation(navController: NavHostController) {
         navigation(startDestination = "contacts", route = "application") {
             composable("contacts") {
                 ContactsScreen(
-                    navController = navController,
-                    contacts = sample_contacts
+                    navController = navController
                 )
             }
             composable("conversation") {
                 ConversationScreen(
-                    navController = navController,
-                    contact = sample_contacts[0]
+                    navController = navController
                 )
             }
         }

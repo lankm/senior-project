@@ -2,8 +2,11 @@ package com.esms.services
 
 import android.content.Context
 import android.net.Uri
+import android.provider.ContactsContract
+import android.provider.Telephony
 import com.esms.models.SMSMessage
 
+// TODO reformat this to work with 'contracts'
 public fun readMessages(context: Context, type: String): List<SMSMessage> {
     val messages = mutableListOf<SMSMessage>()
     val cursor = context.contentResolver.query(

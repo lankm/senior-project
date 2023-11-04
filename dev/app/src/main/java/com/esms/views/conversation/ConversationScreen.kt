@@ -13,7 +13,7 @@ import com.esms.views.contacts.sample_contacts
 import com.esms.views.conversation.history.ConversationHistory
 
 @Composable
-fun ConversationScreen(navController: NavController, contact: Contact) {
+fun ConversationScreen(navController: NavController) {
     Scaffold (
         topBar = { ConversationTopBar(navController) },
         content = { innerPadding -> Box(modifier = Modifier.padding(innerPadding)) {
@@ -27,7 +27,6 @@ fun ConversationScreen(navController: NavController, contact: Contact) {
 @Composable
 fun MessagesScreenPreview() {
     ConversationScreen(
-        navController = rememberNavController(),
-        contact = sample_contacts[0]
+        navController = rememberNavController()
     )
 }

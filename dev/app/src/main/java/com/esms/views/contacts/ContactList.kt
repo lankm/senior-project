@@ -15,24 +15,40 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.esms.models.Contact
+import com.esms.models.PhoneContact
+import com.esms.models.SMSMessage
+import com.esms.services.readContacts
+import com.esms.services.readMessages
 
 @Composable
-fun ContactList(navController: NavController, contacts: List<Contact>) {
-    val scrollState = rememberLazyListState()
+fun ContactList(navController: NavController) {
+    // retrive the list of contacts
+    val context = LocalContext.current
+    val allContacts = remember { mutableListOf<PhoneContact>() }
+    LaunchedEffect(key1 = Unit) {
+        val contact = readContacts(context = context)
+        allContacts += contact.sortedBy { it.name }
+    }
 
-    // Create the LazyColumn
+    // display the list of contacts
+    val scrollState = rememberLazyListState()
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         state = scrollState
     ) {
-        contacts.forEach { contact ->
+        allContacts.forEach { contact ->
             item {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -75,7 +91,6 @@ fun ContactList(navController: NavController, contacts: List<Contact>) {
 @Composable
 fun ContactListPreview() {
     ContactList(
-        navController = rememberNavController(),
-        contacts = sample_contacts
+        navController = rememberNavController()
     )
 }
