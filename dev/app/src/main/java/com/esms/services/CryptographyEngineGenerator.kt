@@ -11,17 +11,17 @@ class CryptographyEngineGenerator {
         // Register engine types here
         registerEngine("PlainText") { params -> PlainTextEngine(params) }
         registerEngine("CaesarCipher") { params -> CaesarCipherEngine(params) }
-        registerEngine("AES") { params -> JavaxCryptographyEngine(params, "AES") }
-        registerEngine("DES") { params -> JavaxCryptographyEngine(params, "DES") }
-        registerEngine("DESede") { params -> JavaxCryptographyEngine(params, "DESede") }
+        registerEngine("AES") { params -> AESCryptographyEngine(params) }
+        registerEngine("DES") { params -> DESCryptographyEngine(params) }
+        registerEngine("DESede") { params -> DESedeCryptographyEngine(params) }
     }
 
     private fun registerEngine(name: String, creator: (String) -> CryptographyEngine) {
         engines[name] = creator
     }
 
-    fun createEngine(name: String, parameters: String): CryptographyEngine? {
-        val creator = engines[name]
-        return creator?.invoke(parameters)
+    fun createEngine(name: String, parameters: String): CryptographyEngine {
+        val creator = engines[name] ?: {params -> PlainTextEngine(params)}
+        return creator.invoke(parameters)
     }
 }
