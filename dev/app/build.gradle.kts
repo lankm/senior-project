@@ -4,12 +4,12 @@ plugins {
 }
 
 android {
-    namespace = "com.example.dev"
+    namespace = "com.esms"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.dev"
-        minSdk = 24
+        applicationId = "com.esms"
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -67,6 +67,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-    implementation("androidx.navigation:navigation-compose:2.7.4")
-    implementation("androidx.compose.material:material")
+    implementation("androidx.navigation:navigation-compose:2.7.4") // navigation
+    implementation("androidx.compose.material:material") // general UI components
+    implementation("com.google.accompanist:accompanist-permissions:0.31.5-beta") // SMS permissions
 }
