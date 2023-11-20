@@ -16,7 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.esms.models.SMSMessage
 import com.esms.models.parseDate
-import com.esms.services.readMessages
+import com.esms.services.SmsService
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -24,10 +24,11 @@ import com.esms.services.readMessages
 fun ConversationHistory() {
     val context = LocalContext.current
     val allMessages = remember { mutableStateMapOf<String, List<SMSMessage>>()}
+    val smsService = SmsService(context)
     LaunchedEffect(key1 = Unit) {
         val messages =
-            readMessages(context = context, type = "inbox") +
-            readMessages(context = context, type = "sent")
+            smsService.readMessages(type = "inbox") +
+            smsService.readMessages(type = "sent")
         allMessages += messages.sortedBy { it.date }.groupBy { it.sender }
     }
 
