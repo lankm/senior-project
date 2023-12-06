@@ -13,18 +13,29 @@ import android.telephony.SmsManager
 class SmsService(private val context: Context) {
 
     /**
+     * Reads SMS messages with a given phone number and returns them as a list sorted by date.
+     *
+     * @param address The phone number of the other phone in a conversation.
+     * @return List of SMSMessage objects with that address.
+     */
+    fun readMessages(address: String): List<SMSMessage> {
+        return (readMessages(type = "inbox", address) +
+               readMessages(type = "sent", address)).sortedBy { it.date }
+    }
+    /**
      * Reads SMS messages of a specified type from the device and returns them as a list.
      *
      * @param type The type of SMS messages to read (e.g., 'inbox', 'sent', etc.).
-     * @return List of SMSMessage objects representing the read messages.
+     * @param address The phone number of the other phone in a conversation.
+     * @return List of SMSMessage objects of that type with that address.
      */
-    fun readMessages(type: String): List<SMSMessage> {
+    fun readMessages(type: String, address: String): List<SMSMessage> {
         val messages = mutableListOf<SMSMessage>()
         val cursor = context.contentResolver.query(
             Uri.parse("content://sms/$type"),
-            null,
-            null,
-            null,
+            arrayOf("body", "address", "date", "read", "type", "thread_id"),
+            "address=?",
+            arrayOf(address),
             null
         )
         cursor?.use {

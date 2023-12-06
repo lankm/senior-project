@@ -18,11 +18,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.esms.models.Parameters
 import com.esms.views.contacts.ContactBox
 import com.esms.views.contacts.sampleContact
 
 @Composable
-fun ConversationTopBar(navController: NavController) {
+fun ConversationTopBar(navController: NavController, params: Parameters) {
     Row(verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -43,7 +44,7 @@ fun ConversationTopBar(navController: NavController) {
         }
 
         // Center Content
-        ContactBox(contact = sampleContact) //TODO retrieve dynamically
+        ContactBox(contact = params.currentContact.value)
 
         // Right IconButton
         IconButton(

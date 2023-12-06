@@ -24,11 +24,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.esms.models.Parameters
 import com.esms.models.PhoneContact
 import com.esms.services.readContacts
 
 @Composable
-fun ContactList(navController: NavController) {
+fun ContactList(navController: NavController, params: Parameters) {
     // retrive the list of contacts
     val context = LocalContext.current
     val allContacts = remember { mutableListOf<PhoneContact>() }
@@ -57,7 +58,8 @@ fun ContactList(navController: NavController) {
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .clickable {
-                                navController.navigate("conversation")// TODO: navigate to a specific contact conversation
+                                params.setCurrentContact(contact)
+                                navController.navigate("conversation")
                             }
                     ) {
                         ContactBox(contact)
@@ -86,6 +88,7 @@ fun ContactList(navController: NavController) {
 @Composable
 fun ContactListPreview() {
     ContactList(
-        navController = rememberNavController()
+        navController = rememberNavController(),
+        params = Parameters()
     )
 }
