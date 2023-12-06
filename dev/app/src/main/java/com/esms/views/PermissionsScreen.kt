@@ -31,7 +31,7 @@ fun PermissionsScreen(onPermissionGranted: () -> Unit) {
     if(permissionStates.allPermissionsGranted) {
         onPermissionGranted()
     } else {
-        askPermission(permissionStates.revokedPermissions.first())
+        AskPermission(permissionStates.revokedPermissions.first())
     }
 }
 

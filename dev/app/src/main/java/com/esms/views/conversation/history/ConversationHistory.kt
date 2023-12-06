@@ -52,7 +52,7 @@ fun ConversationHistory(params: Parameters) {
                     MessageBox(
                         content = it.body,
                         time = it.date,
-                        recieved = it.type == 1,
+                        received = it.type == 1,
                         params = params
                     )
                 }

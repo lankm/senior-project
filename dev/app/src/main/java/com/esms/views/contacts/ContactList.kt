@@ -30,7 +30,7 @@ import com.esms.services.readContacts
 
 @Composable
 fun ContactList(navController: NavController, params: Parameters) {
-    // retrive the list of contacts
+    // retrieve the list of contacts
     val context = LocalContext.current
     val allContacts = remember { mutableListOf<PhoneContact>() }
     LaunchedEffect(key1 = Unit) {

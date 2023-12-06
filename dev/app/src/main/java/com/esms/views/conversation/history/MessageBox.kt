@@ -30,21 +30,21 @@ import com.esms.models.parseDate
 @Composable
 fun MessageBox(content: String,
                time: Long,
-               recieved: Boolean,
+               received: Boolean,
                params: Parameters
 ) {
     val encrypted = remember { mutableStateOf(true) }
     val storedText = remember { mutableStateOf(content) }
 
     // modifier values
-    val layoutDirection: LayoutDirection = if (recieved) LayoutDirection.Ltr
+    val layoutDirection: LayoutDirection = if (received) LayoutDirection.Ltr
                                                     else LayoutDirection.Rtl
-    val backgroundColor: Color =           if (recieved) MaterialTheme.colors.secondary
+    val backgroundColor: Color =           if (received) MaterialTheme.colors.secondary
                                                     else MaterialTheme.colors.surface
-    val textColor: Color =                 if (recieved) MaterialTheme.colors.onSecondary
+    val textColor: Color =                 if (received) MaterialTheme.colors.onSecondary
                                                     else MaterialTheme.colors.onSurface
     // TODO: change all sp/dp values to depend on the phone model
-    val fontsize = 15.sp
+    val fontSize = 15.sp
     val padding = 10.dp
 
     CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
@@ -68,7 +68,7 @@ fun MessageBox(content: String,
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 Text(
                     text = storedText.value,
-                    fontSize = fontsize,
+                    fontSize = fontSize,
                     textAlign = if (layoutDirection == LayoutDirection.Ltr) TextAlign.Right else TextAlign.Left,
                     color = textColor,
                     modifier = Modifier
@@ -92,7 +92,7 @@ fun MessageBox(content: String,
             ) {
                 Text(
                     text = time.parseDate().split(" ")[1],
-                    fontSize = fontsize,
+                    fontSize = fontSize,
                     textAlign = if (layoutDirection == LayoutDirection.Ltr) TextAlign.Left else TextAlign.Right,
                     color = MaterialTheme.colors.onBackground,
                     modifier = Modifier.padding(padding)

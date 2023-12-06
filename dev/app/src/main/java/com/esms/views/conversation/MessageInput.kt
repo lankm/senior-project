@@ -48,7 +48,7 @@ fun MessageInput(context: Context, params: Parameters) {
 
         // Send IconButton
         IconButton(
-            onClick = {if(text.length > 0)SmsService(context).sendMessage(
+            onClick = {if(text.isNotEmpty())SmsService(context).sendMessage(
                 currentAddress,
                 params.currentEncryptionEngine.value.encrypt(text)
             )
