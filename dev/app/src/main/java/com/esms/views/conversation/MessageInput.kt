@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.esms.services.SmsService
 
 @Composable
-fun MessageInput(context: Context) {
+fun MessageInput(context: Context, currentAddress: String = "") {
     var text by remember { mutableStateOf("") }
     
     Row (horizontalArrangement = Arrangement.SpaceBetween) {
@@ -43,7 +43,7 @@ fun MessageInput(context: Context) {
 
         // Send IconButton
         IconButton(
-            onClick = {SmsService(context).sendMessage("8173729003", text)},
+            onClick = {SmsService(context).sendMessage(currentAddress, text)},
             modifier = Modifier.size(48.dp)
         ) {
             Icon(

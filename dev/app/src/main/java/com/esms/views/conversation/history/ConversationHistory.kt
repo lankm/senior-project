@@ -8,11 +8,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.esms.models.SMSMessage
 import com.esms.models.parseDate
@@ -21,50 +20,37 @@ import com.esms.services.SmsService
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ConversationHistory() {
+fun ConversationHistory(currentAddress: String = "") {
     val context = LocalContext.current
-    val allMessages = remember { mutableStateMapOf<String, List<SMSMessage>>()}
     val smsService = SmsService(context)
-    LaunchedEffect(key1 = Unit) {
-        val messages =
-            smsService.readMessages(type = "inbox") +
-            smsService.readMessages(type = "sent")
-        allMessages += messages.sortedBy { it.date }.groupBy { it.sender }
-    }
+    val allMessages: List<SMSMessage> = remember { smsService.readMessages(currentAddress) }
 
-    val scrollState = rememberLazyListState()
+    val scrollState = rememberLazyListState(2 * allMessages.size)
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         state = scrollState
     ) {
-        allMessages.forEach { (sender, messages) ->
-            stickyHeader(key = sender) {
-                Text(
-                    text = sender,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-            messages.groupBy { it.date.parseDate().split(" ").first() }
-                .forEach { (date, smsMessages) ->
-                    item {
-                        Text(
-                            text = date,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-
-                    items(
-                        items = smsMessages,
-                        key = {it.date}
-                    ) {
-                        MessageBox(
-                            content = it.body,
-                            time = it.date,
-                            recieved = false
-                        )
-                    }
+        allMessages.groupBy { it.date.parseDate().split(" ").first() }
+            .forEach { (date, smsMessages) ->
+                item {
+                    Text(
+                        text = date,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
                 }
-        }
+
+                items(
+                    items = smsMessages,
+                    key = {it.date}
+                ) {
+                    MessageBox(
+                        content = it.body,
+                        time = it.date,
+                        recieved = it.type == 1
+                    )
+                }
+            }
     }
 }
 

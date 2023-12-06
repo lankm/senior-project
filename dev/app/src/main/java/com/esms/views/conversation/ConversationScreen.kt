@@ -1,8 +1,6 @@
 package com.esms.views.conversation
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -11,16 +9,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.esms.models.Parameters
 import com.esms.views.conversation.history.ConversationHistory
 
 @Composable
-fun ConversationScreen(navController: NavController) {
+fun ConversationScreen(navController: NavController, params: Parameters) {
+    val currentAddress = params.currentAddress.value.replace(Regex("[()\\- ]"), "")
     Scaffold (
-        topBar = { ConversationTopBar(navController) },
+        topBar = { ConversationTopBar(navController, params) },
         content = { innerPadding -> Box(modifier = Modifier.padding(innerPadding)) {
-            ConversationHistory()
+            ConversationHistory(currentAddress = currentAddress)
         }},
-        bottomBar = {MessageInput(LocalContext.current)}
+        bottomBar = {MessageInput(LocalContext.current, currentAddress = currentAddress)}
     )
 }
 
@@ -28,6 +28,7 @@ fun ConversationScreen(navController: NavController) {
 @Composable
 fun MessagesScreenPreview() {
     ConversationScreen(
-        navController = rememberNavController()
+        navController = rememberNavController(),
+        params = Parameters()
     )
 }
