@@ -37,7 +37,7 @@ fun PermissionsScreen(onPermissionGranted: () -> Unit) {
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun askPermission(permissionState: PermissionState) {
+fun AskPermission(permissionState: PermissionState) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
