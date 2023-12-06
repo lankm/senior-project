@@ -67,7 +67,7 @@ fun MessageBox(content: String,
             ) {
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 Text(
-                    text = storedText.value.replace(" ", " "),
+                    text = storedText.value,
                     fontSize = fontsize,
                     textAlign = if (layoutDirection == LayoutDirection.Ltr) TextAlign.Right else TextAlign.Left,
                     color = textColor,
