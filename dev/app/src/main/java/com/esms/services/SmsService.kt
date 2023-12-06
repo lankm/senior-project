@@ -34,8 +34,8 @@ class SmsService(private val context: Context) {
         val cursor = context.contentResolver.query(
             Uri.parse("content://sms/$type"),
             arrayOf("body", "address", "date", "read", "type", "thread_id"),
-            "address=?",
-            arrayOf(address),
+            "address LIKE ?",
+            arrayOf(cleanAddress(address)),
             null
         )
         cursor?.use {
@@ -48,8 +48,7 @@ class SmsService(private val context: Context) {
             // val indexService = it.getColumnIndex("service_center")
 
             while (it.moveToNext()) {
-                messages.add(
-                    SMSMessage(
+                messages.add(SMSMessage(
                         body = it.getString(indexBody),
                         sender = it.getString(indexSender),
                         date = it.getLong(indexDate),
@@ -80,5 +79,9 @@ class SmsService(private val context: Context) {
             // Handle exceptions like invalid number format or no SMS service available
             e.printStackTrace()
         }
+    }
+
+    private fun cleanAddress(address: String): String{
+        return address.replace(Regex("[)(]"),"").replace(Regex("[ \\-]"),"%")
     }
 }

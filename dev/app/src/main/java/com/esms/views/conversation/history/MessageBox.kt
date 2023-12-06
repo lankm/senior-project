@@ -1,6 +1,7 @@
 package com.esms.views.conversation.history
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,13 +24,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.esms.models.Parameters
 import com.esms.models.parseDate
 
 @Composable
 fun MessageBox(content: String,
                time: Long,
-               recieved: Boolean
+               recieved: Boolean,
+               params: Parameters
 ) {
+    val encrypted = remember { mutableStateOf(true) }
+    val storedText = remember { mutableStateOf(content) }
+
     // modifier values
     val layoutDirection: LayoutDirection = if (recieved) LayoutDirection.Ltr
                                                     else LayoutDirection.Rtl
@@ -43,7 +51,7 @@ fun MessageBox(content: String,
         Row(
             verticalAlignment = Alignment.CenterVertically, modifier = Modifier
                 .fillMaxWidth()
-                .padding(padding)
+                .padding(padding, padding/5)
         ) {
             // message contents
             Box(
@@ -57,13 +65,25 @@ fun MessageBox(content: String,
                         fill = false  // only grow if needed
                     )
             ) {
+                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 Text(
-                    text = content,
+                    text = storedText.value.replace(" ", " "),
                     fontSize = fontsize,
-                    textAlign = TextAlign.Left,
+                    textAlign = if (layoutDirection == LayoutDirection.Ltr) TextAlign.Right else TextAlign.Left,
                     color = textColor,
-                    modifier = Modifier.padding(padding)
+                    modifier = Modifier
+                        .padding(padding)
+                        .clickable {
+                        if(encrypted.value) {
+                            storedText.value = params.currentEncryptionEngine.value.decrypt(storedText.value)
+                            encrypted.value = false
+                        } else {
+                            storedText.value = params.currentEncryptionEngine.value.encrypt(storedText.value)
+                            encrypted.value = true
+                        }
+                    }
                 )
+                }
             }
 
             // time stamp

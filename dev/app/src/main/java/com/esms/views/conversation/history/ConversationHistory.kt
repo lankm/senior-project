@@ -13,13 +13,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import com.esms.models.Parameters
 import com.esms.models.SMSMessage
 import com.esms.models.parseDate
 import com.esms.services.SmsService
 
 
 @Composable
-fun ConversationHistory(currentAddress: String = "") {
+fun ConversationHistory(params: Parameters) {
+    val currentAddress = params.currentAddress.value
     val context = LocalContext.current
     val smsService = SmsService(context)
     val allMessages: List<SMSMessage> = remember { smsService.readMessages(currentAddress) }
@@ -32,8 +34,12 @@ fun ConversationHistory(currentAddress: String = "") {
         allMessages.groupBy { it.date.parseDate().split(" ").first() }
             .forEach { (date, smsMessages) ->
                 item {
+                    val dateParts = date.split("/")
+                    val month = dateParts[1]
+                    val day = dateParts[0].replace(Regex("^0"), "")
+                    val year = dateParts[2]
                     Text(
-                        text = date,
+                        text = "$month $day, $year",
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center
                     )
@@ -43,10 +49,12 @@ fun ConversationHistory(currentAddress: String = "") {
                     items = smsMessages,
                     key = {it.date}
                 ) {
+                    println(it.body)
                     MessageBox(
                         content = it.body,
                         time = it.date,
-                        recieved = it.type == 1
+                        recieved = it.type == 1,
+                        params = params
                     )
                 }
             }
@@ -56,5 +64,5 @@ fun ConversationHistory(currentAddress: String = "") {
 @Preview
 @Composable
 fun ConversationHistoryPreview() {
-    ConversationHistory()
+    ConversationHistory(Parameters())
 }
