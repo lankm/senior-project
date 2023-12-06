@@ -82,6 +82,6 @@ class SmsService(private val context: Context) {
     }
 
     private fun cleanAddress(address: String): String{
-        return "%"+address.replace(Regex("[)(]|(\\+1)"),"").replace(Regex("[ \\-]"),"%")
+        return "%"+address.replace(Regex("[)(]|(\\+1 )"),"").replace(Regex("[ \\-]"),"%")
     }
 }
