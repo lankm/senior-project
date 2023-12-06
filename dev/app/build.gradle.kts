@@ -67,6 +67,8 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    implementation("io.coil-kt:coil:2.0.0") // Simplifies Image loading
+    implementation("io.coil-kt:coil-compose:2.5.0") // JPC integration for coil
     implementation("androidx.navigation:navigation-compose:2.7.4") // navigation
     implementation("androidx.compose.material:material") // general UI components
     implementation("com.google.accompanist:accompanist-permissions:0.31.5-beta") // SMS permissions

@@ -2,32 +2,38 @@ package com.esms.services
 
 import android.content.Context
 import android.provider.ContactsContract
-import com.esms.R
 import com.esms.models.PhoneContact
-import com.esms.models.SMSMessage
+import android.content.ContentUris
+import android.graphics.BitmapFactory
+import android.net.Uri
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import java.io.ByteArrayInputStream
 
-public fun readContacts(context: Context): List<PhoneContact> {
+fun readContacts(context: Context): List<PhoneContact> {
     val contacts = mutableListOf<PhoneContact>()
 
-    val contactsUri = ContactsContract.Contacts.CONTENT_URI
-    val projection = arrayOf(ContactsContract.Contacts.DISPLAY_NAME)
-    val cursor = context.contentResolver.query(
-        contactsUri,
-        projection,
+    val contactsCursor = context.contentResolver.query(
+        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+        arrayOf(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.PHOTO_URI),
         null,
         null,
         null
     )
 
-    cursor?.use {
-        val indexName = it.getColumnIndex("display_name")
+    contactsCursor?.use {
+        val indexName = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+        val indexNumber = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+        val indexPhoto = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI)
 
         while (it.moveToNext()) {
+            val photoUri = it.getString(indexPhoto)
+            println(photoUri)
             contacts.add(
                 PhoneContact(
-                    pfp = R.drawable.ic_launcher_background,    //TODO
+                    pfp = photoUri,
                     name = it.getString(indexName),
-                    number = "999-999-9999" //TODO
+                    number = it.getString(indexNumber)
                 )
             )
         }
