@@ -14,7 +14,7 @@ import com.esms.views.conversation.history.ConversationHistory
 
 @Composable
 fun ConversationScreen(navController: NavController, params: Parameters) {
-    val currentAddress = params.currentAddress.value.replace(Regex("[()\\- ]"), "")
+    val currentAddress = params.currentContact.value.number.replace(Regex("[()\\- ]"), "")
     Scaffold (
         topBar = { ConversationTopBar(navController, params) },
         content = { innerPadding -> Box(modifier = Modifier.padding(innerPadding)) {

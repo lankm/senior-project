@@ -27,7 +27,7 @@ import com.esms.services.SmsService
 
 @Composable
 fun MessageInput(context: Context, params: Parameters) {
-    val currentAddress = params.currentAddress.value
+    val currentAddress = params.currentContact.value.number
     var text by remember { mutableStateOf("") }
     val padding = 10.dp
     

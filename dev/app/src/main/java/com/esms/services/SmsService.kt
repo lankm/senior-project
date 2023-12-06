@@ -29,7 +29,7 @@ class SmsService(private val context: Context) {
      * @param address The phone number of the other phone in a conversation.
      * @return List of SMSMessage objects of that type with that address.
      */
-    fun readMessages(type: String, address: String): List<SMSMessage> {
+    private fun readMessages(type: String, address: String): List<SMSMessage> {
         val messages = mutableListOf<SMSMessage>()
         val cursor = context.contentResolver.query(
             Uri.parse("content://sms/$type"),
@@ -82,6 +82,6 @@ class SmsService(private val context: Context) {
     }
 
     private fun cleanAddress(address: String): String{
-        return address.replace(Regex("[)(]"),"").replace(Regex("[ \\-]"),"%")
+        return "%"+address.replace(Regex("[)(]|(\\+1)"),"").replace(Regex("[ \\-]"),"%")
     }
 }

@@ -1,6 +1,5 @@
 package com.esms.views.conversation.history
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,7 +20,7 @@ import com.esms.services.SmsService
 
 @Composable
 fun ConversationHistory(params: Parameters) {
-    val currentAddress = params.currentAddress.value
+    val currentAddress = params.currentContact.value.number
     val context = LocalContext.current
     val smsService = SmsService(context)
     val allMessages: List<SMSMessage> = remember { smsService.readMessages(currentAddress) }
