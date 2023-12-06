@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.esms.models.Parameters
 import com.esms.views.contacts.ContactBox
-import com.esms.views.contacts.sampleContact
 
 @Composable
 fun ConversationTopBar(navController: NavController, params: Parameters) {

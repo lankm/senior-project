@@ -1,7 +1,5 @@
 package com.esms.models
 
-import androidx.compose.ui.graphics.ImageBitmap
-
 data class PhoneContact(
     val pfp: String?,
     val name: String,

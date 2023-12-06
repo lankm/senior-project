@@ -3,12 +3,6 @@ package com.esms.services
 import android.content.Context
 import android.provider.ContactsContract
 import com.esms.models.PhoneContact
-import android.content.ContentUris
-import android.graphics.BitmapFactory
-import android.net.Uri
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
-import java.io.ByteArrayInputStream
 
 fun readContacts(context: Context): List<PhoneContact> {
     val contacts = mutableListOf<PhoneContact>()

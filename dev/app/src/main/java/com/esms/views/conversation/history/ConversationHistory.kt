@@ -18,7 +18,6 @@ import com.esms.models.parseDate
 import com.esms.services.SmsService
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ConversationHistory(currentAddress: String = "") {
     val context = LocalContext.current
