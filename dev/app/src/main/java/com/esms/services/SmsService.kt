@@ -50,7 +50,7 @@ class SmsService(private val context: Context) {
             while (it.moveToNext()) {
                 messages.add(SMSMessage(
                         body = it.getString(indexBody),
-                        sender = it.getString(indexSender),
+                        extAddr = it.getString(indexSender),
                         date = it.getLong(indexDate),
                         read = it.getString(indexRead).toBoolean(),
                         type = it.getInt(indexType),

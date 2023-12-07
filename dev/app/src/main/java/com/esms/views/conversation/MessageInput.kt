@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.esms.models.Parameters
+import com.esms.models.SMSMessage
 import com.esms.services.SmsService
 
 @Composable
@@ -49,10 +50,21 @@ fun MessageInput(context: Context, params: Parameters) {
         // Send IconButton
         IconButton(
             onClick = {if(text.isNotEmpty())SmsService(context).sendMessage(
-                currentAddress,
-                params.currentEncryptionEngine.value.encrypt(text)
-            )
-                      text = ""},
+                            currentAddress,
+                            params.currentEncryptionEngine.value.encrypt(text)
+                        )
+                        params.runCurrentMessageAdder(
+                            SMSMessage(
+                                body = params.currentEncryptionEngine.value.encrypt(text),
+                                extAddr = params.currentContact.value.number?:"",
+                                date = System.currentTimeMillis(),
+                                read = true,
+                                type = SMSMessage.SENT,
+                                thread = 0
+                            )
+                        )
+                        text = ""
+                      },
             modifier = Modifier.fillMaxHeight(.05f)
         ) {
             Icon(

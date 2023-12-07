@@ -3,7 +3,6 @@ package com.esms.views.conversation.history
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Text
@@ -28,12 +27,17 @@ fun ConversationHistory(params: Parameters) {
     val context = LocalContext.current
     val smsService = SmsService(context)
     val allMessages = remember { mutableStateOf(smsService.readMessages(currentAddress)) }
+    params.setCurrentMessageAdder { msg: SMSMessage ->
+        run {
+            allMessages.value += msg
+        }
+    }
     val scrollState = rememberLazyListState(2 * allMessages.value.size)
     LaunchedEffect(allMessages.value.size) {
         scrollState.scrollToItem(index = 2 * allMessages.value.size - 1)
     }
     SmsListener { newMessage: SMSMessage ->
-        if (newMessage.sender.replace(Regex("[)(+\\- ]"), "") in currentAddress.replace(Regex("[)(+\\- ]"), "")) {
+        if (newMessage.extAddr.replace(Regex("[)(+\\- ]"), "") in currentAddress.replace(Regex("[)(+\\- ]"), "")) {
             allMessages.value += newMessage
         }
     }

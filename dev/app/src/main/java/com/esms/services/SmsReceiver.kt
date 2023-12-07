@@ -11,7 +11,7 @@ class SmsReceiver(private val onSmsReceived: (SMSMessage) -> Unit) : BroadcastRe
         if (intent.action == Telephony.Sms.Intents.SMS_RECEIVED_ACTION) {
             val messages = Telephony.Sms.Intents.getMessagesFromIntent(intent)
             val message = messages[0] ?: return
-            onSmsReceived(SMSMessage(message.messageBody?:"", message.originatingAddress?:"", message.timestampMillis, false, 1, 0))
+            onSmsReceived(SMSMessage(message.messageBody?:"", message.originatingAddress?:"", message.timestampMillis, false, SMSMessage.RECEIVED, 0))
         }
     }
 }

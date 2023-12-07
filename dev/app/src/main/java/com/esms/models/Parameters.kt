@@ -21,6 +21,15 @@ class Parameters (contact: PhoneContact = sampleContact) : ViewModel(){
         currentEncryptionEngine.value = CryptographyEngineGenerator().createEngine(name, parameters)
     }
 
+    var currentMessageAdder = mutableStateOf<((SMSMessage) -> Unit)?>(null)
+        private set
+    fun setCurrentMessageAdder(func: (SMSMessage)->Unit){
+        currentMessageAdder.value = func
+    }
+    fun runCurrentMessageAdder(msg: SMSMessage){
+        currentMessageAdder.value?.invoke(msg)
+    }
+
     // Saved Params
     
 }
