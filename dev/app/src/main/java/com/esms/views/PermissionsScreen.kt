@@ -19,6 +19,7 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 // make sure to include these permission in AndroidManifest.xml as well
 val permissions = listOf(
     android.Manifest.permission.READ_SMS,
+    android.Manifest.permission.RECEIVE_SMS,
     android.Manifest.permission.SEND_SMS,
     android.Manifest.permission.READ_CONTACTS
 )

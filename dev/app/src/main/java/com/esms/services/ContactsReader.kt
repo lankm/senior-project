@@ -22,7 +22,6 @@ fun readContacts(context: Context): List<PhoneContact> {
 
         while (it.moveToNext()) {
             val photoUri = it.getString(indexPhoto)
-            println(photoUri)
             contacts.add(
                 PhoneContact(
                     pfp = photoUri,
