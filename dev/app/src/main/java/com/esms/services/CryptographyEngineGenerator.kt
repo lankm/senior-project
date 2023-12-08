@@ -24,4 +24,8 @@ class CryptographyEngineGenerator {
         val creator = engines[name] ?: {params -> PlainTextEngine(params)}
         return creator.invoke(parameters)
     }
+
+    fun getRegisteredEngines() : List<String>{
+        return engines.keys.toList()
+    }
 }

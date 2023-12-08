@@ -59,6 +59,7 @@ fun ContactList(navController: NavController, params: Parameters) {
                         modifier = Modifier
                             .clickable {
                                 params.setCurrentContact(contact)
+                                params.setCurrentEncryptionEngine(params.getEncryptionAlgorithmFor(contact.number), params.getEncryptionParametersFor(contact.number))
                                 navController.navigate("conversation")
                             }
                     ) {

@@ -31,12 +31,33 @@ class Parameters : ViewModel(){
     }
 
     // Saved Params
-    fun persistentEditableParams() : List<Pair<String, (String) -> Unit>> {
+
+    private var numberToEncryptionAlgorithm = mutableMapOf<String, String>()
+    fun getEncryptionAlgorithmFor(number: String) : String{
+        return numberToEncryptionAlgorithm[number] ?: defaultEncryptionAlgorithm.value
+    }
+
+    private var numberToEncryptionParameters = mutableMapOf<String, String>()
+    fun getEncryptionParametersFor(number: String) : String{
+        return numberToEncryptionParameters[number] ?: defaultEncryptionParameters.value
+    }
+
+    // Editable Parameters
+    fun persistentEditableParams() : List<EditableParamater> {
         return listOf(
-            Pair("Default Encryption Algorithm (Current : ${defaultEncryptionAlgorithm.value})",  { algorithm: String -> defaultEncryptionAlgorithm.value = algorithm })
+            EditableParamater(
+                "Default Encryption Algorithm",
+                { algorithm: String -> defaultEncryptionAlgorithm.value = algorithm },
+                CryptographyEngineGenerator().getRegisteredEngines(),
+                defaultEncryptionAlgorithm.value
+            ),
         )
     }
 
     var defaultEncryptionAlgorithm = mutableStateOf("AES")
         private set
+    var defaultEncryptionParameters = mutableStateOf("AES")
+        private set
 }
+
+data class EditableParamater(val name: String, val setter: (String)->Unit, val options: List<String>, val currentState: String)

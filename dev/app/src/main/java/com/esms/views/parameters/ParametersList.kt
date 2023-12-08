@@ -44,7 +44,7 @@ fun ParametersList(params: Parameters) {
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            text = param.first,
+                            text = param.name,
                             color = MaterialTheme.colors.onSurface
                         )
                     }
@@ -54,13 +54,13 @@ fun ParametersList(params: Parameters) {
                     IconButton(
                         onClick = {
                             // TODO: get user input somehow
-                              param.second("User input")
+                              param.setter("User input")
                         },
                         modifier = Modifier.size(48.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Edit,
-                            contentDescription = "Edit ${param.first}",
+                            contentDescription = "Edit ${param.name}",
                         )
                     }
                 }
