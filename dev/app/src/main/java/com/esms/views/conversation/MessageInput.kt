@@ -1,11 +1,12 @@
 package com.esms.views.conversation
 
 import android.content.Context
+import android.content.res.Resources
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -28,6 +29,7 @@ import com.esms.services.SmsService
 
 @Composable
 fun MessageInput(context: Context, params: Parameters) {
+    val displayMetrics = Resources.getSystem().displayMetrics
     val currentAddress = params.currentContact.value.number
     var text by remember { mutableStateOf("") }
     val padding = 10.dp
@@ -43,7 +45,7 @@ fun MessageInput(context: Context, params: Parameters) {
                     color = MaterialTheme.colors.surface
                 )
                 .fillMaxWidth(0.90F)
-                .fillMaxHeight(.05f)
+                .height(displayMetrics.heightPixels.dp/55F)
                 .padding(padding),
         )
 
@@ -65,7 +67,7 @@ fun MessageInput(context: Context, params: Parameters) {
                         )
                         text = ""
                       },
-            modifier = Modifier.fillMaxHeight(.05f)
+            modifier = Modifier.height(displayMetrics.heightPixels.dp/55F)
         ) {
             Icon(
                 imageVector = Icons.Default.Send,

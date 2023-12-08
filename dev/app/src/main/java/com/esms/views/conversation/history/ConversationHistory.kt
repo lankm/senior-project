@@ -8,9 +8,11 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,6 +29,7 @@ fun ConversationHistory(params: Parameters) {
     val context = LocalContext.current
     val smsService = SmsService(context)
     val allMessages = remember { mutableStateOf(smsService.readMessages(currentAddress)) }
+    val listHeight = remember { mutableIntStateOf(0)}
     params.setCurrentMessageAdder { msg: SMSMessage ->
         run {
             allMessages.value += msg
@@ -36,6 +39,9 @@ fun ConversationHistory(params: Parameters) {
     LaunchedEffect(allMessages.value.size) {
         scrollState.scrollToItem(index = 2 * allMessages.value.size - 1)
     }
+    LaunchedEffect(listHeight.intValue) {
+        scrollState.scrollToItem(index = 2 * allMessages.value.size - 1)
+    }
     SmsListener { newMessage: SMSMessage ->
         if (newMessage.extAddr.replace(Regex("[)(+\\- ]"), "") in currentAddress.replace(Regex("[)(+\\- ]"), "")) {
             allMessages.value += newMessage
@@ -43,7 +49,9 @@ fun ConversationHistory(params: Parameters) {
     }
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .onSizeChanged { size -> listHeight.intValue = size.height },
         state = scrollState
     ) {
         allMessages.value.groupBy { it.date.parseDate().split(" ").first() }

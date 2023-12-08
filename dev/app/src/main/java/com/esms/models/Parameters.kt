@@ -31,5 +31,4 @@ class Parameters (contact: PhoneContact = sampleContact) : ViewModel(){
     }
 
     // Saved Params
-    
 }
