@@ -5,13 +5,12 @@ import androidx.lifecycle.ViewModel
 import com.esms.services.CryptographyEngineGenerator
 import com.esms.services.engines.CryptographyEngine
 import com.esms.services.engines.custom.PlainTextEngine
-import com.esms.views.contacts.sampleContact
 
-class Parameters (contact: PhoneContact = sampleContact) : ViewModel(){
+class Parameters : ViewModel(){
     // Ephemeral Params
-    var currentContact = mutableStateOf(contact)
+    var currentContact = mutableStateOf<PhoneContact?>(null)
         private set
-    fun setCurrentContact(contact: PhoneContact) {
+    fun setCurrentContact(contact: PhoneContact?) {
         currentContact.value = contact
     }
 

@@ -30,7 +30,7 @@ import com.esms.services.SmsService
 @Composable
 fun MessageInput(context: Context, params: Parameters) {
     val displayMetrics = Resources.getSystem().displayMetrics
-    val currentAddress = params.currentContact.value.number
+    val currentAddress = params.currentContact.value!!.number
     var text by remember { mutableStateOf("") }
     val padding = 10.dp
     
@@ -58,7 +58,7 @@ fun MessageInput(context: Context, params: Parameters) {
                         params.runCurrentMessageAdder(
                             SMSMessage(
                                 body = params.currentEncryptionEngine.value.encrypt(text),
-                                extAddr = params.currentContact.value.number?:"",
+                                extAddr = params.currentContact.value!!.number,
                                 date = System.currentTimeMillis(),
                                 read = true,
                                 type = SMSMessage.SENT,

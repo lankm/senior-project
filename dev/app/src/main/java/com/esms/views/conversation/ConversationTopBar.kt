@@ -43,7 +43,7 @@ fun ConversationTopBar(navController: NavController, params: Parameters) {
         }
 
         // Center Content
-        ContactBox(contact = params.currentContact.value)
+        ContactBox(contact = params.currentContact.value!!)
 
         // Right IconButton
         IconButton(
