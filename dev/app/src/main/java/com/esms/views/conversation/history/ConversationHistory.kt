@@ -21,11 +21,13 @@ import com.esms.models.SMSMessage
 import com.esms.models.parseDate
 import com.esms.services.SmsListener
 import com.esms.services.SmsService
+import com.esms.views.contacts.sampleContact
 
 
 @Composable
 fun ConversationHistory(params: Parameters) {
-    val currentAddress = params.currentContact.value!!.number
+    val currentContact = remember {params.currentContact.value!!}
+    val currentAddress = currentContact.number
     val context = LocalContext.current
     val smsService = SmsService(context)
     val allMessages = remember { mutableStateOf(smsService.readMessages(currentAddress)) }

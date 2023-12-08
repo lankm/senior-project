@@ -13,6 +13,7 @@ import com.esms.views.AuthScreen
 import com.esms.views.PermissionsScreen
 import com.esms.views.contacts.ContactsScreen
 import com.esms.views.conversation.ConversationScreen
+import com.esms.views.parameters.ParametersScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,6 +57,12 @@ fun Navigation(navController: NavHostController) {
             }
             composable("conversation") {
                 ConversationScreen(
+                    navController = navController,
+                    params = params
+                )
+            }
+            composable("parameters") {
+                ParametersScreen(
                     navController = navController,
                     params = params
                 )

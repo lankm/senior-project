@@ -14,15 +14,18 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.esms.models.Parameters
 import com.esms.views.contacts.ContactBox
+import com.esms.views.contacts.sampleContact
 
 @Composable
 fun ConversationTopBar(navController: NavController, params: Parameters) {
+    val currentContact = remember {params.currentContact.value!!}
     Row(verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -33,7 +36,10 @@ fun ConversationTopBar(navController: NavController, params: Parameters) {
     ) {
         // Left IconButton
         IconButton(
-            onClick = { navController.popBackStack() },
+            onClick = {
+                navController.popBackStack()
+                params.setCurrentContact(null)
+            },
             modifier = Modifier.size(48.dp)
         ) {
             Icon(
@@ -43,11 +49,11 @@ fun ConversationTopBar(navController: NavController, params: Parameters) {
         }
 
         // Center Content
-        ContactBox(contact = params.currentContact.value!!)
+        ContactBox(contact = currentContact)
 
         // Right IconButton
         IconButton(
-            onClick = { /* TODO: implement conversation settings. probably a right drawer */ },
+            onClick = { navController.navigate("parameters") },
             modifier = Modifier.size(48.dp)
         ) {
             Icon(

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.esms.services.CryptographyEngineGenerator
 import com.esms.services.engines.CryptographyEngine
 import com.esms.services.engines.custom.PlainTextEngine
+import java.util.concurrent.Callable
 
 class Parameters : ViewModel(){
     // Ephemeral Params
@@ -30,4 +31,12 @@ class Parameters : ViewModel(){
     }
 
     // Saved Params
+    fun persistentEditableParams() : List<Pair<String, (String) -> Unit>> {
+        return listOf(
+            Pair("Default Encryption Algorithm (Current : ${defaultEncryptionAlgorithm.value})",  { algorithm: String -> defaultEncryptionAlgorithm.value = algorithm })
+        )
+    }
+
+    var defaultEncryptionAlgorithm = mutableStateOf("AES")
+        private set
 }
