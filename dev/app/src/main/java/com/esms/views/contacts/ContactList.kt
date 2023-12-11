@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
@@ -77,6 +78,7 @@ fun ContactList(navController: NavController, params: Parameters) {
                         Icon(
                             imageVector = Icons.Default.Edit,
                             contentDescription = "Edit ${contact.name}'s contact info",
+                            tint = MaterialTheme.colors.onSurface
                         )
                     }
                 }

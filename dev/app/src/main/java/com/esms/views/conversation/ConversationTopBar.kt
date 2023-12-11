@@ -45,6 +45,7 @@ fun ConversationTopBar(navController: NavController, params: Parameters) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
                 contentDescription = "Back to contacts",
+                tint = MaterialTheme.colors.onSurface
             )
         }
 
@@ -59,6 +60,7 @@ fun ConversationTopBar(navController: NavController, params: Parameters) {
             Icon(
                 imageVector = Icons.Default.Menu,
                 contentDescription = "Conversation settings",
+                tint = MaterialTheme.colors.onSurface
             )
         }
     }

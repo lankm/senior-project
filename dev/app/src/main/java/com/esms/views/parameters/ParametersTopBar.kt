@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.esms.models.Parameters
+import com.esms.theme.EsmsTheme
 import com.esms.views.contacts.ContactBox
 
 
@@ -42,12 +43,15 @@ fun ParametersTopBar(navController: NavController, params: Parameters) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
                 contentDescription = "Back to contacts",
+                tint = MaterialTheme.colors.onSurface
             )
         }
 
         // Center Content
         Row(
-            modifier = Modifier.fillMaxWidth().padding(0.dp,0.dp,48.dp,0.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(0.dp, 0.dp, 48.dp, 0.dp),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             if(params.currentContact.value != null)

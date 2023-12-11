@@ -38,6 +38,7 @@ fun ContactsTopBar(navController: NavController) {
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = "Add contact",
+                tint = MaterialTheme.colors.onSurface
             )
         }
 
@@ -52,6 +53,7 @@ fun ContactsTopBar(navController: NavController) {
             Icon(
                 imageVector = Icons.Default.Menu,
                 contentDescription = "Global settings",
+                tint = MaterialTheme.colors.onSurface
             )
         }
     }
