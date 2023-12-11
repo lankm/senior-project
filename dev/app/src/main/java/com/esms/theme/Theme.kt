@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 
-private val DarkColors = darkColors(
+private val darkColors = darkColors(
     primary = Color(0xFF1111AA),
     primaryVariant = Color(0xFF116666),
     onPrimary = Color(0xFFEEEEEE),
@@ -29,7 +29,7 @@ private val DarkColors = darkColors(
     onError = Color(0xFF111111),
 )
 
-private val LightColors = lightColors(
+private val lightColors = lightColors(
     primary = Color(0xFF1111FF),
     primaryVariant = Color(0xFF11FFFF),
     onPrimary = Color(0xFFFFFFFF),
@@ -59,11 +59,11 @@ fun EsmsTheme(
 
     MaterialTheme(
         colors = if (darkTheme) {
-            activity?.window?.statusBarColor = DarkColors.surface.toArgb()
-            DarkColors
+            activity?.window?.statusBarColor = darkColors.surface.toArgb()
+            darkColors
         } else {
-            activity?.window?.statusBarColor = LightColors.surface.toArgb()
-            LightColors
+            activity?.window?.statusBarColor = lightColors.surface.toArgb()
+            lightColors
         },
         typography = Typography,
         content = content

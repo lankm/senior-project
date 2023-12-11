@@ -20,9 +20,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val params = Parameters(LocalContext.current)
             EsmsTheme {
                 val navController = rememberNavController()
-                Navigation(navController)
+                Navigation(navController, params)
             }
         }
     }
@@ -30,8 +31,7 @@ class MainActivity : ComponentActivity() {
 
 // NavGraph
 @Composable
-fun Navigation(navController: NavHostController) {
-    val params = Parameters(LocalContext.current)
+fun Navigation(navController: NavHostController, params: Parameters) {
     NavHost(navController = navController, startDestination = "permissions") {
         composable("permissions") {
             PermissionsScreen(
