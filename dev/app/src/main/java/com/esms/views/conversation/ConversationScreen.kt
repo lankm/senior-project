@@ -28,6 +28,6 @@ fun ConversationScreen(navController: NavController, params: Parameters) {
 fun MessagesScreenPreview() {
     ConversationScreen(
         navController = rememberNavController(),
-        params = Parameters()
+        params = Parameters(LocalContext.current)
     )
 }

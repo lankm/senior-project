@@ -38,7 +38,7 @@ fun ConversationTopBar(navController: NavController, params: Parameters) {
         IconButton(
             onClick = {
                 navController.popBackStack()
-                params.setCurrentContact(null)
+                params.currentContact.value = null
             },
             modifier = Modifier.size(48.dp)
         ) {

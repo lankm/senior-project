@@ -75,7 +75,10 @@ fun MessageBox(content: String,
                         .padding(padding)
                         .clickable {
                         if(encrypted.value) {
-                            storedText.value = params.currentEncryptionEngine.value.decrypt(storedText.value)
+                            try {
+                                storedText.value =
+                                    params.currentEncryptionEngine.value.decrypt(storedText.value)
+                            } catch (_:Exception){}
                             encrypted.value = false
                         } else {
                             storedText.value = params.currentEncryptionEngine.value.encrypt(storedText.value)

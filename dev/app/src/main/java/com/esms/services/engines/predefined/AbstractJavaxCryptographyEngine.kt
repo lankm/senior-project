@@ -32,22 +32,19 @@ abstract class AbstractJavaxCryptographyEngine : CryptographyEngine {
     }
 
     override fun decrypt(encryptedText: String): String {
-        try {
-            val combined = Base64.getDecoder().decode(encryptedText)
+        val combined = Base64.getDecoder().decode(encryptedText)
 
-            val (iv, encryptedBytes) = if (doIVs) {
-                combined.copyOfRange(0, ivSize) to combined.copyOfRange(ivSize, combined.size)
-            } else {
-                ByteArray(ivSize) to combined
-            }
+        val (iv, encryptedBytes) = if (doIVs) {
+            combined.copyOfRange(0, ivSize) to combined.copyOfRange(ivSize, combined.size)
+        } else {
+            ByteArray(ivSize) to combined
+        }
 
-            val ivSpec = IvParameterSpec(iv)
-            val cipher = Cipher.getInstance(cipherAlgorithm)
-            cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec)
-            val decryptedBytes = cipher.doFinal(encryptedBytes)
+        val ivSpec = IvParameterSpec(iv)
+        val cipher = Cipher.getInstance(cipherAlgorithm)
+        cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec)
+        val decryptedBytes = cipher.doFinal(encryptedBytes)
 
-            return String(decryptedBytes)
-        } catch (_: Exception) {}
-        return encryptedText
+        return String(decryptedBytes)
     }
 }

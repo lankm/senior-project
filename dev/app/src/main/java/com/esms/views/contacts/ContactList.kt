@@ -58,8 +58,8 @@ fun ContactList(navController: NavController, params: Parameters) {
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .clickable {
-                                params.setCurrentContact(contact)
-                                params.setCurrentEncryptionEngine(params.getEncryptionAlgorithmFor(contact.number), params.getEncryptionParametersFor(contact.number))
+                                params.currentContact.value = contact
+                                params.setCurrentEncryptionEngine(contact.number)
                                 navController.navigate("conversation")
                             }
                     ) {
@@ -90,6 +90,6 @@ fun ContactList(navController: NavController, params: Parameters) {
 fun ContactListPreview() {
     ContactList(
         navController = rememberNavController(),
-        params = Parameters()
+        params = Parameters(LocalContext.current)
     )
 }

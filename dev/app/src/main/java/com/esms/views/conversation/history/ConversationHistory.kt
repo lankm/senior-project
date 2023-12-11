@@ -88,5 +88,5 @@ fun ConversationHistory(params: Parameters) {
 @Preview
 @Composable
 fun ConversationHistoryPreview() {
-    ConversationHistory(Parameters())
+    ConversationHistory(Parameters(LocalContext.current))
 }
