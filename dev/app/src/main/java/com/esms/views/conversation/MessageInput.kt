@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import com.esms.models.Parameters
 import com.esms.models.SMSMessage
 import com.esms.services.SmsService
-import com.esms.views.contacts.sampleContact
 
 @Composable
 fun MessageInput(context: Context, params: Parameters) {
@@ -40,7 +39,7 @@ fun MessageInput(context: Context, params: Parameters) {
         BasicTextField(
             value = text,
             onValueChange = { text = it },
-            textStyle = TextStyle(color = MaterialTheme.colors.secondary),
+            textStyle = TextStyle(color = MaterialTheme.colors.onSurface),
             modifier = Modifier
                 .background(
                     shape = RoundedCornerShape(padding),
@@ -74,6 +73,7 @@ fun MessageInput(context: Context, params: Parameters) {
             Icon(
                 imageVector = Icons.Default.Send,
                 contentDescription = "Send message",
+                tint = MaterialTheme.colors.onBackground
             )
         }
     }

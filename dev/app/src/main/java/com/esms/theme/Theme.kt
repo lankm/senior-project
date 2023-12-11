@@ -7,44 +7,44 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-// TODO: Do a big theme refactor
 private val DarkColors = darkColors(
-    primary = Color.Blue,
-    primaryVariant = Color.Cyan,
-    onPrimary = Color.Black,
+    primary = Color(0xFF1111AA),
+    primaryVariant = Color(0xFF116666),
+    onPrimary = Color(0xFFEEEEEE),
 
-    secondary = Color.Magenta,
-    secondaryVariant = Color.DarkGray,
-    onSecondary = Color.Black,
+    secondary = Color(0xFF771177),
+    secondaryVariant = Color(0xFF804040),
+    onSecondary = Color(0xFFEEEEEE),
 
-    background = Color.DarkGray,
-    onBackground = Color.White,
+    background = Color(0xFF333333),
+    onBackground = Color(0xFFEEEEEE),
 
-    surface = Color.Black,
-    onSurface = Color.White,
+    surface = Color(0xFF111111),
+    onSurface = Color(0xFFEEEEEE),
 
-    error = Color.Red,
-    onError = Color.Red,
+    error = Color(0xFFFF7070),
+    onError = Color(0xFF111111),
 )
 
 private val LightColors = lightColors(
-    primary = Color.Blue,
-    primaryVariant = Color.Cyan,
-    onPrimary = Color.White,
+    primary = Color(0xFF1111FF),
+    primaryVariant = Color(0xFF11FFFF),
+    onPrimary = Color(0xFFFFFFFF),
 
-    secondary = Color.Gray,
-    secondaryVariant = Color.DarkGray,
-    onSecondary = Color.Black,
+    secondary = Color(0xFF888888),
+    secondaryVariant = Color(0xFF444444),
+    onSecondary = Color(0xFF111111),
 
-    background = Color.White,
-    onBackground = Color.Gray,
+    background = Color(0xFFFFFFFF),
+    onBackground = Color(0xFF888888),
 
-    surface = Color.LightGray,
-    onSurface = Color.Black,
+    surface = Color(0xFFCCCCCC),
+    onSurface = Color(0xFF111111),
 
-    error = Color.Red,
-    onError = Color.Red,
+    error = Color(0xFFFF7070),
+    onError = Color(0xFF111111),
 )
+// TODO: Do a big theme refactor
 
 @Composable
 fun EsmsTheme(

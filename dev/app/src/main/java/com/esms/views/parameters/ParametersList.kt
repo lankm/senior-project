@@ -11,6 +11,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonColors
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
@@ -69,6 +71,7 @@ fun ParametersList(params: Parameters) {
                             Icon(
                                 imageVector = Icons.Default.Edit,
                                 contentDescription = "Edit ${param.name}",
+                                tint = MaterialTheme.colors.onBackground
                             )
                         }
                         var text by remember { mutableStateOf(param.currentState) }
@@ -92,8 +95,9 @@ fun ParametersList(params: Parameters) {
                                 },
                                 dismissButton = {
                                     Button(
-                                        onClick = { showDialog = false }
-                                    ) { Text("Cancel") }
+                                        onClick = { showDialog = false },
+                                        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant)
+                                    ) { Text("Cancel", color = MaterialTheme.colors.onPrimary) }
                                 }
                             )
                         }
