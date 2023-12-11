@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -16,6 +17,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
@@ -58,17 +60,41 @@ fun ParametersList(params: Parameters) {
 
 
                     if (param.options.isEmpty()) {
+                        var showDialog by remember { mutableStateOf(false) }
                         // IconButton to edit/get more info
                         IconButton(
-                            onClick = {
-                                // TODO: get user input somehow
-                                  param.setter("User input")
-                            },
+                            onClick = { showDialog = true },
                             modifier = Modifier.size(48.dp)
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Edit,
                                 contentDescription = "Edit ${param.name}",
+                            )
+                        }
+                        var text by remember { mutableStateOf(param.currentState) }
+
+                        if (showDialog) {
+                            AlertDialog(
+                                onDismissRequest = { showDialog = false },
+                                title = { Text(text = param.name) },
+                                text = { TextField(
+                                        value = text,
+                                        onValueChange = { text = it },
+                                        label = { Text("Set value") }
+                                )},
+                                confirmButton = {
+                                    Button(
+                                        onClick = {
+                                            showDialog = false
+                                            param.setter(text)
+                                        }
+                                    ) { Text("Set") }
+                                },
+                                dismissButton = {
+                                    Button(
+                                        onClick = { showDialog = false }
+                                    ) { Text("Cancel") }
+                                }
                             )
                         }
                     } else {
