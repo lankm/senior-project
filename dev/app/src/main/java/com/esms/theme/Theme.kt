@@ -1,11 +1,14 @@
 package com.esms.theme
 
+import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 
 private val DarkColors = darkColors(
     primary = Color(0xFF1111AA),
@@ -51,8 +54,17 @@ fun EsmsTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
+    val context = LocalContext.current
+    val activity = context as? Activity
+
     MaterialTheme(
-        colors = if (darkTheme) DarkColors else LightColors,
+        colors = if (darkTheme) {
+            activity?.window?.statusBarColor = DarkColors.surface.toArgb()
+            DarkColors
+        } else {
+            activity?.window?.statusBarColor = LightColors.surface.toArgb()
+            LightColors
+        },
         typography = Typography,
         content = content
     )
