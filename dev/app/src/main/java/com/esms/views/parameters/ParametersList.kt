@@ -83,7 +83,7 @@ fun ParametersList(params: Parameters) {
                                 text = { TextField(
                                         value = text,
                                         onValueChange = { text = it },
-                                        label = { Text("Set value") }
+                                        label = { Text("Set value" + param.comment) }
                                 )},
                                 confirmButton = {
                                     Button(

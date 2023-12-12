@@ -46,7 +46,8 @@ fun Navigation(navController: NavHostController, params: Parameters) {
                 onAuthGranted = {
                     navController.popBackStack()
                     navController.navigate("application")
-                }
+                },
+                params = params
             )
         }
         navigation(startDestination = "contacts", route = "application") {

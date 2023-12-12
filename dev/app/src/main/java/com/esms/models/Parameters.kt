@@ -18,6 +18,7 @@ class Parameters (context: Context) : ViewModel(){
     val saveSystem = SharedPreferencesService(context)
 
     // Ephemeral Params
+    var loaded = mutableStateOf(false)
     var currentContact = mutableStateOf<PhoneContact?>(null)
         private set
 
@@ -47,20 +48,36 @@ class Parameters (context: Context) : ViewModel(){
         return numberToEncryptionParameters[number] ?: numberToEncryptionParameters[""] ?: DEFAULT_ENCRYPTION_PARAMETERS
     }
 
+    private var saveEncryptionParameter = mutableStateOf(DEFAULT_ENCRYPTION_PARAMETERS)
+
     // Persistence Functions
     val ENCRYPTION_ALGORITHMS = "0"
     val ENCRYPTION_PARAMETERS = "1"
+    val SAVE_ENCRYPTION_PARAMETER = "2"
     fun persist() {
         val maps = mapOf(
             ENCRYPTION_ALGORITHMS to numberToEncryptionAlgorithm.toMap(),
             ENCRYPTION_PARAMETERS to numberToEncryptionParameters.toMap(),
+            SAVE_ENCRYPTION_PARAMETER to mapOf("" to saveEncryptionParameter.value)
         )
-        saveSystem.write(saveSystem.stringifyMapMap(maps))
+        val saveEncryptor = engineGen.createEngine("AES", saveEncryptionParameter.value)
+        val saveString = saveSystem.stringifyMapMap(maps)
+        val encryptedSaveString = saveEncryptor.encrypt(saveString)
+        saveSystem.write(encryptedSaveString)
     }
-    fun load() {
-        val maps = saveSystem.destringifyMaps(saveSystem.read())
-        numberToEncryptionAlgorithm = maps[ENCRYPTION_ALGORITHMS]?.toMutableMap() ?: mutableMapOf("" to DEFAULT_ENCRYPTION_ALGORITHM)
-        numberToEncryptionParameters = maps[ENCRYPTION_PARAMETERS]?.toMutableMap() ?: mutableMapOf("" to DEFAULT_ENCRYPTION_PARAMETERS)
+    fun load(key: String = DEFAULT_ENCRYPTION_PARAMETERS) {
+        val savedString = saveSystem.read()
+        val decryptingEngine = engineGen.createEngine("AES", key)
+        val decryptedString = try {decryptingEngine.decrypt(savedString)} catch (_: Exception) {savedString}
+        try {
+            if(decryptedString == savedString && savedString != "")
+                throw Exception()
+            val maps = saveSystem.destringifyMaps(decryptedString)
+            numberToEncryptionAlgorithm = maps[ENCRYPTION_ALGORITHMS]?.toMutableMap() ?: mutableMapOf("" to DEFAULT_ENCRYPTION_ALGORITHM)
+            numberToEncryptionParameters = maps[ENCRYPTION_PARAMETERS]?.toMutableMap() ?: mutableMapOf("" to DEFAULT_ENCRYPTION_PARAMETERS)
+            saveEncryptionParameter.value = maps.getOrDefault(SAVE_ENCRYPTION_PARAMETER, mapOf("" to DEFAULT_ENCRYPTION_PARAMETERS)).getOrDefault("", DEFAULT_ENCRYPTION_PARAMETERS)
+            loaded.value = true
+        } catch (_: Exception){}
     }
 
     // Editable Parameters
@@ -86,6 +103,16 @@ class Parameters (context: Context) : ViewModel(){
                 options = listOf(),
                 currentState = getEncryptionParametersFor(currentContact.value?.number ?: "")
             ),
+            EditableParameter(
+                name = "Save Encryption Key",
+                setter = { key: String -> run {
+                    saveEncryptionParameter.value = key
+                    persist()
+                }},
+                options = listOf(),
+                currentState = saveEncryptionParameter.value,
+                comment = " (\"$DEFAULT_ENCRYPTION_PARAMETERS\" = no auth screen)"
+            ),
         )
     }
 
@@ -104,5 +131,6 @@ data class EditableParameter(
     val name: String,
     val setter: (String)->Unit,
     val options: List<String>,
-    var currentState: String
+    var currentState: String,
+    val comment: String = "",
 )
