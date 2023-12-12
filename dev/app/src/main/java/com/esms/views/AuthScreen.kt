@@ -27,7 +27,7 @@ fun AuthScreen(onAuthGranted: () -> Unit, params: Parameters) {
             onDismissRequest = { exitProcess(0) },
             title = { Text(text = "Authenticate") },
             text = { TextField(
-                value = "•".repeat(text.length),
+                value = "⬤".repeat(text.length),
                 onValueChange = { text = it },
                 label = { Text("Password") }
             )
