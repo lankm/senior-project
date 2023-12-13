@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navOptions
 import com.esms.models.Parameters
 import com.esms.models.PhoneContact
 import com.esms.services.readContacts
@@ -71,7 +72,8 @@ fun ContactList(navController: NavController, params: Parameters) {
                     // IconButton to edit/get more info
                     IconButton(
                         onClick = {
-                            // TODO: implement contact editing
+                            params.currentContact.value = contact
+                            navController.navigate("parameters")
                         },
                         modifier = Modifier.size(48.dp)
                     ) {

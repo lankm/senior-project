@@ -16,17 +16,18 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.esms.models.Parameters
-import com.esms.theme.EsmsTheme
 import com.esms.views.contacts.ContactBox
 
 
 @Composable
 fun ParametersTopBar(navController: NavController, params: Parameters) {
+    val currentContact = remember {params.currentContact.value}
     Row(verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -37,7 +38,11 @@ fun ParametersTopBar(navController: NavController, params: Parameters) {
     ) {
         // Left IconButton
         IconButton(
-            onClick = { navController.popBackStack() },
+            onClick = {
+                if(navController.previousBackStackEntry?.destination?.route == "contacts")
+                    params.currentContact.value = null
+                navController.popBackStack()
+            },
             modifier = Modifier.size(48.dp)
         ) {
             Icon(
@@ -54,9 +59,9 @@ fun ParametersTopBar(navController: NavController, params: Parameters) {
                 .padding(0.dp, 0.dp, 48.dp, 0.dp),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            if(params.currentContact.value != null)
+            if(currentContact != null)
                 Column(modifier = Modifier.fillMaxHeight()) {
-                    ContactBox(contact = params.currentContact.value!!)
+                    ContactBox(contact = currentContact)
                     Text(
                         text = "Contact Parameters",
                         color = MaterialTheme.colors.onSurface

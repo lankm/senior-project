@@ -14,8 +14,8 @@ class Parameters (context: Context) : ViewModel(){
     val DEFAULT_ENCRYPTION_PARAMETERS = "insecure"
 
     // Services
-    val engineGen = CryptographyEngineGenerator()
-    val saveSystem = SharedPreferencesService(context)
+    private val engineGen = CryptographyEngineGenerator()
+    private val saveSystem = SharedPreferencesService(context)
 
     // Ephemeral Params
     var loaded = mutableStateOf(false)
@@ -28,8 +28,7 @@ class Parameters (context: Context) : ViewModel(){
         currentEncryptionEngine.value = engineGen.createEngine(getEncryptionAlgorithmFor(number), getEncryptionParametersFor(number))
     }
 
-    var currentMessageAdder = mutableStateOf<((SMSMessage) -> Unit)?>(null)
-        private set
+    private var currentMessageAdder = mutableStateOf<((SMSMessage) -> Unit)?>(null)
     fun setCurrentMessageAdder(func: (SMSMessage)->Unit){
         currentMessageAdder.value = func
     }
@@ -39,12 +38,12 @@ class Parameters (context: Context) : ViewModel(){
 
     // Saved Params
     private var numberToEncryptionAlgorithm = mutableMapOf<String, String>()
-    fun getEncryptionAlgorithmFor(number: String?) : String{
+    private fun getEncryptionAlgorithmFor(number: String?) : String{
         return numberToEncryptionAlgorithm[number] ?: numberToEncryptionAlgorithm[""] ?: DEFAULT_ENCRYPTION_ALGORITHM
     }
 
     private var numberToEncryptionParameters = mutableMapOf<String, String>()
-    fun getEncryptionParametersFor(number: String?) : String {
+    private fun getEncryptionParametersFor(number: String?) : String {
         return numberToEncryptionParameters[number] ?: numberToEncryptionParameters[""] ?: DEFAULT_ENCRYPTION_PARAMETERS
     }
 
@@ -81,27 +80,27 @@ class Parameters (context: Context) : ViewModel(){
     }
 
     // Editable Parameters
-    fun persistentEditableParams() : List<EditableParameter> {
+    fun persistentEditableParams(currentContact: PhoneContact?) : List<EditableParameter> {
         return listOf(
             EditableParameter(
-                name = "${defaultAlterationString()}Encryption Algorithm",
+                name = "${defaultAlterationString(currentContact)}Encryption Algorithm",
                 setter = { algorithm: String -> run {
-                    numberToEncryptionAlgorithm[currentContact.value?.number ?: ""] = algorithm
+                    numberToEncryptionAlgorithm[currentContact?.number ?: ""] = algorithm
                     persist()
-                    setCurrentEncryptionEngine(currentContact.value?.number ?: "")
+                    setCurrentEncryptionEngine(currentContact?.number ?: "")
                 }},
                 options = CryptographyEngineGenerator().getRegisteredEngines(),
-                currentState = getEncryptionAlgorithmFor(currentContact.value?.number ?: "")
+                currentState = getEncryptionAlgorithmFor(currentContact?.number ?: "")
             ),
             EditableParameter(
-                name = "${defaultAlterationString()}Encryption Parameter",
+                name = "${defaultAlterationString(currentContact)}Encryption Parameter",
                 setter = { algorithm: String -> run {
-                    numberToEncryptionParameters[currentContact.value?.number ?: ""] = algorithm
+                    numberToEncryptionParameters[currentContact?.number ?: ""] = algorithm
                     persist()
-                    setCurrentEncryptionEngine(currentContact.value?.number ?: "")
+                    setCurrentEncryptionEngine(currentContact?.number ?: "")
                 }},
                 options = listOf(),
-                currentState = getEncryptionParametersFor(currentContact.value?.number ?: "")
+                currentState = getEncryptionParametersFor(currentContact?.number ?: "")
             ),
             EditableParameter(
                 name = "Save Encryption Key",
@@ -122,8 +121,8 @@ class Parameters (context: Context) : ViewModel(){
     }
 
     // Private Helper Functions
-    private fun defaultAlterationString(): String {
-        return if (currentContact.value == null) "Default " else ""
+    private fun defaultAlterationString(currentContact: PhoneContact?): String {
+        return if (currentContact == null) "Default " else ""
     }
 }
 

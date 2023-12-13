@@ -35,7 +35,8 @@ import com.esms.models.Parameters
 
 @Composable
 fun ParametersList(params: Parameters) {
-    val editableParams = params.persistentEditableParams()
+    val currentContact = remember {params.currentContact.value}
+    val editableParams = params.persistentEditableParams(currentContact)
     val scrollState = rememberLazyListState()
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
