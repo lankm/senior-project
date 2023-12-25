@@ -11,11 +11,7 @@ import com.esms.services.engines.CryptographyEngine
  */
 class CaesarCipherEngine(parameters: String) : CryptographyEngine {
     // Holds the number of positions to shift the characters in the Caesar cipher
-    private var shift: Int = 0
-
-    init {
-        shift = parameters.toIntOrNull() ?: 0
-    }
+    private var shift: Int = parameters.toIntOrNull() ?: 0
 
     /**
      * Encrypts the provided text using the Caesar cipher.

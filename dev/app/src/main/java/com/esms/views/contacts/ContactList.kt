@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
@@ -24,12 +25,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.esms.models.Parameters
 import com.esms.models.PhoneContact
 import com.esms.services.readContacts
 
 @Composable
-fun ContactList(navController: NavController) {
-    // retrive the list of contacts
+fun ContactList(navController: NavController, params: Parameters) {
+    // retrieve the list of contacts
     val context = LocalContext.current
     val allContacts = remember { mutableListOf<PhoneContact>() }
     LaunchedEffect(key1 = Unit) {
@@ -57,7 +59,9 @@ fun ContactList(navController: NavController) {
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .clickable {
-                                navController.navigate("conversation")// TODO: navigate to a specific contact conversation
+                                params.currentContact.value = contact
+                                params.setCurrentEncryptionEngine(contact.number)
+                                navController.navigate("conversation")
                             }
                     ) {
                         ContactBox(contact)
@@ -74,6 +78,7 @@ fun ContactList(navController: NavController) {
                         Icon(
                             imageVector = Icons.Default.Edit,
                             contentDescription = "Edit ${contact.name}'s contact info",
+                            tint = MaterialTheme.colors.onSurface
                         )
                     }
                 }
@@ -86,6 +91,7 @@ fun ContactList(navController: NavController) {
 @Composable
 fun ContactListPreview() {
     ContactList(
-        navController = rememberNavController()
+        navController = rememberNavController(),
+        params = Parameters(LocalContext.current)
     )
 }

@@ -14,14 +14,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
-import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.shouldShowRationale
 
 // make sure to include these permission in AndroidManifest.xml as well
 val permissions = listOf(
     android.Manifest.permission.READ_SMS,
+    android.Manifest.permission.RECEIVE_SMS,
     android.Manifest.permission.SEND_SMS,
     android.Manifest.permission.READ_CONTACTS
 )
@@ -34,13 +32,13 @@ fun PermissionsScreen(onPermissionGranted: () -> Unit) {
     if(permissionStates.allPermissionsGranted) {
         onPermissionGranted()
     } else {
-        askPermission(permissionStates.revokedPermissions.first())
+        AskPermission(permissionStates.revokedPermissions.first())
     }
 }
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun askPermission(permissionState: PermissionState) {
+fun AskPermission(permissionState: PermissionState) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

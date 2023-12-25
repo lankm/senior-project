@@ -1,6 +1,6 @@
 package com.esms.views.contacts
 
-import androidx.compose.foundation.Image
+import coil.compose.AsyncImage
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,14 +23,18 @@ import com.esms.models.PhoneContact
 
 @Composable
 fun ContactBox(contact: PhoneContact) {
+    val fallbackPainter = painterResource(id = R.drawable.ic_launcher_background)
     Row(verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .height(50.dp)
     ) {
         // pfp
-        Image(
-            painter = painterResource(id = contact.pfp),
-            contentDescription = "My Image",
+        AsyncImage(
+            model = contact.pfp,
+            placeholder = fallbackPainter,
+            error = fallbackPainter,
+            fallback = fallbackPainter,
+            contentDescription = contact.name,
             modifier = Modifier
                 .clip(CircleShape)
                 .fillMaxHeight()
@@ -66,7 +70,7 @@ fun ContactBoxPreview() {
 }
 //TODO remove this
 val sampleContact = PhoneContact(
-    pfp = R.drawable.ic_launcher_background,
-    name = "Landon Moon",
-    number = "817-694-6767"
+    pfp = null,
+    name = "Dohn Daycom",
+    number = "555-888-9999"
 )

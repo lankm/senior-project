@@ -38,6 +38,7 @@ fun ContactsTopBar(navController: NavController) {
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = "Add contact",
+                tint = MaterialTheme.colors.onSurface
             )
         }
 
@@ -46,12 +47,13 @@ fun ContactsTopBar(navController: NavController) {
 
         // Right IconButton
         IconButton(
-            onClick = { /* TODO: implement global settings. probably a right drawer */ },
+            onClick = { navController.navigate("parameters") },
             modifier = Modifier.size(48.dp)
         ) {
             Icon(
                 imageVector = Icons.Default.Menu,
                 contentDescription = "Global settings",
+                tint = MaterialTheme.colors.onSurface
             )
         }
     }
