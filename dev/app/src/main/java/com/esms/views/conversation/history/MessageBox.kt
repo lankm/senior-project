@@ -69,7 +69,7 @@ fun MessageBox(content: String,
                 Text(
                     text = storedText.value,
                     fontSize = fontSize,
-                    textAlign = if (layoutDirection == LayoutDirection.Ltr) TextAlign.Right else TextAlign.Left,
+                    textAlign = TextAlign.Left,
                     color = textColor,
                     modifier = Modifier
                         .padding(padding)
