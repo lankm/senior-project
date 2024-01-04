@@ -82,36 +82,44 @@ class Parameters (context: Context) : ViewModel(){
     // Editable Parameters
     fun persistentEditableParams(currentContact: PhoneContact?) : List<EditableParameter> {
         return listOf(
-            EditableParameter(
-                name = "${defaultAlterationString(currentContact)}Encryption Algorithm",
-                setter = { algorithm: String -> run {
-                    numberToEncryptionAlgorithm[currentContact?.number ?: ""] = algorithm
-                    persist()
-                    setCurrentEncryptionEngine(currentContact?.number ?: "")
-                }},
-                options = CryptographyEngineGenerator().getRegisteredEngines(),
-                currentState = getEncryptionAlgorithmFor(currentContact?.number ?: "")
-            ),
-            EditableParameter(
-                name = "${defaultAlterationString(currentContact)}Encryption Parameter",
-                setter = { algorithm: String -> run {
-                    numberToEncryptionParameters[currentContact?.number ?: ""] = algorithm
-                    persist()
-                    setCurrentEncryptionEngine(currentContact?.number ?: "")
-                }},
-                options = listOf(),
-                currentState = getEncryptionParametersFor(currentContact?.number ?: "")
-            ),
-            EditableParameter(
-                name = "Save Encryption Key",
-                setter = { key: String -> run {
-                    saveEncryptionParameter.value = key
-                    persist()
-                }},
-                options = listOf(),
-                currentState = saveEncryptionParameter.value,
-                comment = " (\"$DEFAULT_ENCRYPTION_PARAMETERS\" = no auth screen)"
-            ),
+            encryptionAlgorithmSelector(currentContact),
+            encryptionParameterSelector(currentContact),
+            globalEncryptionKeySelector(),
+        )
+    }
+
+    private fun encryptionAlgorithmSelector(currentContact: PhoneContact?) : EditableParameter{
+        return EditableParameter(
+            name = "${defaultAlterationString(currentContact)}Encryption Algorithm",
+            setter = { algorithm: String -> run {
+                numberToEncryptionAlgorithm[currentContact?.number ?: ""] = algorithm
+                persist()
+                setCurrentEncryptionEngine(currentContact?.number ?: "")
+            }},
+            options = CryptographyEngineGenerator().getRegisteredEngines(),
+            currentState = getEncryptionAlgorithmFor(currentContact?.number ?: "")
+        )
+    }
+    private fun encryptionParameterSelector(currentContact: PhoneContact?) : EditableParameter{
+        return EditableParameter(
+            name = "${defaultAlterationString(currentContact)}Encryption Parameter",
+            setter = { algorithm: String -> run {
+                numberToEncryptionParameters[currentContact?.number ?: ""] = algorithm
+                persist()
+                setCurrentEncryptionEngine(currentContact?.number ?: "")
+            }},
+            currentState = getEncryptionParametersFor(currentContact?.number ?: "")
+        )
+    }
+    private fun globalEncryptionKeySelector() : EditableParameter{
+        return EditableParameter(
+            name = "Save Encryption Key",
+            setter = { key: String -> run {
+                saveEncryptionParameter.value = key
+                persist()
+            }},
+            currentState = saveEncryptionParameter.value,
+            comment = " (\"$DEFAULT_ENCRYPTION_PARAMETERS\" = no auth screen)"
         )
     }
 
@@ -129,7 +137,7 @@ class Parameters (context: Context) : ViewModel(){
 data class EditableParameter(
     val name: String,
     val setter: (String)->Unit,
-    val options: List<String>,
+    val options: List<String> = listOf(),
     var currentState: String,
     val comment: String = "",
 )
