@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.esms.models.Parameters
 import com.esms.models.SMSMessage
 import com.esms.services.SmsService
+import kotlin.concurrent.thread
 
 @Composable
 fun MessageInput(context: Context, params: Parameters) {
@@ -52,22 +53,13 @@ fun MessageInput(context: Context, params: Parameters) {
 
         // Send IconButton
         IconButton(
-            onClick = {if(text.isNotEmpty())SmsService(context).sendMessage(
-                            currentAddress,
-                            params.currentEncryptionEngine.value.encrypt(text)
-                        )
-                        params.runCurrentMessageAdder(
-                            SMSMessage(
-                                body = params.currentEncryptionEngine.value.encrypt(text),
-                                extAddr = currentAddress,
-                                date = System.currentTimeMillis(),
-                                read = true,
-                                type = SMSMessage.SENT,
-                                thread = 0
-                            )
-                        )
-                        text = ""
-                      },
+            onClick = {
+                if(text.isNotEmpty()) {
+                    val messageText = text
+                    text = ""
+                    sendMessageAsync(context.applicationContext, params, messageText, currentAddress)
+                }
+            },
             modifier = Modifier.height(displayMetrics.heightPixels.dp/55F)
         ) {
             Icon(
@@ -77,4 +69,23 @@ fun MessageInput(context: Context, params: Parameters) {
             )
         }
     }
+}
+
+private fun sendMessageAsync(context: Context, params: Parameters, text: String, currentAddress: String) {
+    val encryptedText = params.currentEncryptionEngine.value.encrypt(text)
+    params.runCurrentMessageAdder(
+        SMSMessage(
+            body = encryptedText,
+            extAddr = currentAddress,
+            date = System.currentTimeMillis(),
+            read = true,
+            type = SMSMessage.SENT,
+            thread = 0
+        )
+    )
+    thread(start = true) {
+    SmsService(context).sendMessage(
+        currentAddress,
+        encryptedText
+    )}
 }
