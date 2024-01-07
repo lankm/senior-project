@@ -7,6 +7,8 @@ import com.esms.services.CryptographyEngineGenerator
 import com.esms.services.SharedPreferencesService
 import com.esms.services.engines.CryptographyEngine
 import com.esms.services.engines.custom.PlainTextEngine
+import java.lang.Long.max
+import java.lang.Long.parseLong
 
 class Parameters (context: Context) : ViewModel(){
     // Constants
@@ -49,15 +51,27 @@ class Parameters (context: Context) : ViewModel(){
 
     private var saveEncryptionParameter = mutableStateOf(DEFAULT_ENCRYPTION_PARAMETERS)
 
+    private var numberToNickname = mutableMapOf<String, String>()
+    fun getNicknameFor(number: String, default: String) : String {
+        return numberToNickname[number] ?: default
+    }
+    fun setNicknameFor(number: String, nickname: String) {
+        numberToNickname[number] = nickname
+    }
+
     // Persistence Functions
     val ENCRYPTION_ALGORITHMS = "0"
     val ENCRYPTION_PARAMETERS = "1"
     val SAVE_ENCRYPTION_PARAMETER = "2"
+    val NICKNAMES = "3"
+
     fun persist() {
         val maps = mapOf(
             ENCRYPTION_ALGORITHMS to numberToEncryptionAlgorithm.toMap(),
             ENCRYPTION_PARAMETERS to numberToEncryptionParameters.toMap(),
-            SAVE_ENCRYPTION_PARAMETER to mapOf("" to saveEncryptionParameter.value)
+            SAVE_ENCRYPTION_PARAMETER to mapOf("" to saveEncryptionParameter.value),
+            NICKNAMES to numberToNickname.toMap(),
+            TIMESTAMPS to numberToLastMessageTime.toMap(),
         )
         val saveEncryptor = engineGen.createEngine("AES", saveEncryptionParameter.value)
         val saveString = saveSystem.stringifyMapMap(maps)
@@ -72,9 +86,13 @@ class Parameters (context: Context) : ViewModel(){
             if(decryptedString == savedString && savedString != "")
                 throw Exception()
             val maps = saveSystem.destringifyMaps(decryptedString)
+
             numberToEncryptionAlgorithm = maps[ENCRYPTION_ALGORITHMS]?.toMutableMap() ?: mutableMapOf("" to DEFAULT_ENCRYPTION_ALGORITHM)
             numberToEncryptionParameters = maps[ENCRYPTION_PARAMETERS]?.toMutableMap() ?: mutableMapOf("" to DEFAULT_ENCRYPTION_PARAMETERS)
             saveEncryptionParameter.value = maps.getOrDefault(SAVE_ENCRYPTION_PARAMETER, mapOf("" to DEFAULT_ENCRYPTION_PARAMETERS)).getOrDefault("", DEFAULT_ENCRYPTION_PARAMETERS)
+            numberToNickname = maps[NICKNAMES]?.toMutableMap() ?: mutableMapOf()
+            numberToLastMessageTime = maps[TIMESTAMPS]?.toMutableMap() ?: mutableMapOf()
+
             loaded.value = true
         } catch (_: Exception){}
     }
@@ -85,7 +103,8 @@ class Parameters (context: Context) : ViewModel(){
             encryptionAlgorithmSelector(currentContact),
             encryptionParameterSelector(currentContact),
             globalEncryptionKeySelector(),
-        )
+            nicknameSelector(currentContact),
+        ).filterNotNull()
     }
 
     private fun encryptionAlgorithmSelector(currentContact: PhoneContact?) : EditableParameter{
@@ -120,6 +139,23 @@ class Parameters (context: Context) : ViewModel(){
             }},
             currentState = saveEncryptionParameter.value,
             comment = " (\"$DEFAULT_ENCRYPTION_PARAMETERS\" = no auth screen)"
+        )
+    }
+    private fun nicknameSelector(currentState: PhoneContact?) : EditableParameter? {
+        if(currentState == null)
+            return null
+
+        return EditableParameter(
+            name = "Nickname",
+            setter = { key: String -> run {
+                if(key.isNotBlank())
+                    setNicknameFor(currentState.number, key)
+                else
+                    numberToNickname.remove(currentState.number)
+                persist()
+            }},
+            currentState = getNicknameFor(currentState.number, currentState.name),
+            comment = " (Leave this blank -> Reset to ${currentState.name})"
         )
     }
 

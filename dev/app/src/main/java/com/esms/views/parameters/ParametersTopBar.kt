@@ -61,7 +61,7 @@ fun ParametersTopBar(navController: NavController, params: Parameters) {
         ) {
             if(currentContact != null)
                 Column(modifier = Modifier.fillMaxHeight()) {
-                    ContactBox(contact = currentContact)
+                    ContactBox(contact = currentContact, params = params)
                     Text(
                         text = "Contact Parameters",
                         color = MaterialTheme.colors.onSurface
