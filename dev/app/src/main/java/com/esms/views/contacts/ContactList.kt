@@ -36,7 +36,7 @@ fun ContactList(navController: NavController, params: Parameters) {
     val allContacts = remember { mutableListOf<PhoneContact>() }
     LaunchedEffect(key1 = Unit) {
         val contact = readContacts(context = context)
-        allContacts += contact.sortedBy { it.name }
+        allContacts += contact.sortedBy { -params.getLastMessageTimeFor(it.number) }
     }
 
     // display the list of contacts

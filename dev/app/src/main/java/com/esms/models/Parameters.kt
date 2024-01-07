@@ -59,11 +59,23 @@ class Parameters (context: Context) : ViewModel(){
         numberToNickname[number] = nickname
     }
 
+    private var numberToLastMessageTime = mutableMapOf<String, String>()
+    fun getLastMessageTimeFor(number: String) : Long {
+        return parseLong(numberToLastMessageTime[number] ?: "0")
+    }
+    fun setLastMessageTimeFor(number: String, timestamp: Long) {
+        if(getLastMessageTimeFor(number) < timestamp){
+            numberToLastMessageTime[number] = timestamp.toString()
+            persist()
+        }
+    }
+
     // Persistence Functions
     val ENCRYPTION_ALGORITHMS = "0"
     val ENCRYPTION_PARAMETERS = "1"
     val SAVE_ENCRYPTION_PARAMETER = "2"
     val NICKNAMES = "3"
+    val TIMESTAMPS = "4"
 
     fun persist() {
         val maps = mapOf(

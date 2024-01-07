@@ -80,6 +80,7 @@ fun ConversationHistory(params: Parameters) {
                         received = it.type == 1,
                         params = params
                     )
+                    params.setLastMessageTimeFor(currentContact.number, it.date)
                 }
             }
     }
