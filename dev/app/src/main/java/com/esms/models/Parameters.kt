@@ -1,12 +1,15 @@
 package com.esms.models
 
 import android.content.Context
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.esms.services.CryptographyEngineGenerator
 import com.esms.services.SharedPreferencesService
 import com.esms.services.engines.CryptographyEngine
 import com.esms.services.engines.custom.PlainTextEngine
+import com.esms.views.parameters.selectors.FreeSelector
+import com.esms.views.parameters.selectors.OptionsSelector
 import java.lang.Long.max
 import java.lang.Long.parseLong
 
@@ -115,7 +118,7 @@ class Parameters (context: Context) : ViewModel(){
     }
 
     // Editable Parameters
-    fun persistentEditableParams(currentContact: PhoneContact?) : List<EditableParameter> {
+    fun persistentEditableParams(currentContact: PhoneContact?) : List<@Composable ()->Unit> {
         return listOfNotNull(
             encryptionAlgorithmSelector(currentContact),
             encryptionParameterSelector(currentContact),
@@ -125,8 +128,8 @@ class Parameters (context: Context) : ViewModel(){
         )
     }
 
-    private fun encryptionAlgorithmSelector(currentContact: PhoneContact?) : EditableParameter{
-        return EditableParameter(
+    private fun encryptionAlgorithmSelector(currentContact: PhoneContact?) : @Composable ()->Unit{
+        return OptionsSelector(
             name = "${defaultAlterationString(currentContact)}Encryption Algorithm",
             setter = { algorithm: String -> run {
                 numberToEncryptionAlgorithm[currentContact?.number ?: ""] = algorithm
@@ -137,8 +140,8 @@ class Parameters (context: Context) : ViewModel(){
             currentState = getEncryptionAlgorithmFor(currentContact?.number ?: "")
         )
     }
-    private fun encryptionParameterSelector(currentContact: PhoneContact?) : EditableParameter{
-        return EditableParameter(
+    private fun encryptionParameterSelector(currentContact: PhoneContact?) : @Composable ()->Unit {
+        return FreeSelector(
             name = "${defaultAlterationString(currentContact)}Encryption Parameter",
             setter = { algorithm: String -> run {
                 numberToEncryptionParameters[currentContact?.number ?: ""] = algorithm
@@ -148,8 +151,8 @@ class Parameters (context: Context) : ViewModel(){
             currentState = getEncryptionParametersFor(currentContact?.number ?: "")
         )
     }
-    private fun globalEncryptionKeySelector() : EditableParameter{
-        return EditableParameter(
+    private fun globalEncryptionKeySelector() : @Composable ()->Unit {
+        return FreeSelector(
             name = "Save Encryption Key",
             setter = { key: String -> run {
                 saveEncryptionParameter.value = key
@@ -159,11 +162,11 @@ class Parameters (context: Context) : ViewModel(){
             comment = " (\"$DEFAULT_ENCRYPTION_PARAMETERS\" = no auth screen)"
         )
     }
-    private fun nicknameSelector(currentState: PhoneContact?) : EditableParameter? {
+    private fun nicknameSelector(currentState: PhoneContact?) : (@Composable ()->Unit)? {
         if(currentState == null)
             return null
 
-        return EditableParameter(
+        return FreeSelector(
             name = "Nickname",
             setter = { key: String -> run {
                 if(key.isNotBlank())
@@ -176,8 +179,8 @@ class Parameters (context: Context) : ViewModel(){
             comment = " (Leave this blank -> Reset to ${currentState.name})"
         )
     }
-    private fun primaryThemeSelector() : EditableParameter{
-        return EditableParameter(
+    private fun primaryThemeSelector() : @Composable ()->Unit {
+        return OptionsSelector(
             name = "Color Theme",
             setter = { key: String -> run {
                 theme.value = key
@@ -198,11 +201,3 @@ class Parameters (context: Context) : ViewModel(){
         return if (currentContact == null) "Default " else ""
     }
 }
-
-data class EditableParameter(
-    val name: String,
-    val setter: (String)->Unit,
-    val options: List<String> = listOf(),
-    var currentState: String,
-    val comment: String = "",
-)
