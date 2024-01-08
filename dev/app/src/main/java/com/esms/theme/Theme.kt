@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import com.esms.models.Parameters
 
 private val darkColors = darkColors(
     primary = Color(0xFF1111AA),
@@ -47,23 +48,48 @@ private val lightColors = lightColors(
     error = Color(0xFFFF7070),
     onError = Color(0xFF111111),
 )
-// TODO: Do a big theme refactor
+
+private val customColors = darkColors( // TODO: Make this editable and saved in params
+    primary = Color(0xFF1111AA),
+    primaryVariant = Color(0xFF116666),
+    onPrimary = Color(0xFFEEEEEE),
+
+    secondary = Color(0xFF771177),
+    secondaryVariant = Color(0xFF804040),
+    onSecondary = Color(0xFFEEEEEE),
+
+    background = Color(0xFF333333),
+    onBackground = Color(0xFFEEEEEE),
+
+    surface = Color(0xFF111111),
+    onSurface = Color(0xFFEEEEEE),
+
+    error = Color(0xFFFF7070),
+    onError = Color(0xFF111111),
+)
 
 @Composable
 fun EsmsTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    params: Parameters,
     content: @Composable () -> Unit
 ) {
+    val theme = if (params.theme.value == "System")
+                    (if (isSystemInDarkTheme()) "Dark" else "Light")
+                else params.theme.value
     val context = LocalContext.current
     val activity = context as? Activity
 
     MaterialTheme(
-        colors = if (darkTheme) {
-            activity?.window?.statusBarColor = darkColors.surface.toArgb()
-            darkColors
-        } else {
+        colors = when (theme) {
+            "Dark" -> {
+                activity?.window?.statusBarColor = darkColors.surface.toArgb()
+                darkColors }
+            "Light" -> {
             activity?.window?.statusBarColor = lightColors.surface.toArgb()
-            lightColors
+            lightColors }
+            else -> {
+                activity?.window?.statusBarColor = customColors.surface.toArgb()
+                customColors }
         },
         typography = Typography,
         content = content

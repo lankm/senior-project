@@ -70,12 +70,15 @@ class Parameters (context: Context) : ViewModel(){
         }
     }
 
+    var theme = mutableStateOf("System"); // Light, Dark, System, Custom
+
     // Persistence Functions
     val ENCRYPTION_ALGORITHMS = "0"
     val ENCRYPTION_PARAMETERS = "1"
     val SAVE_ENCRYPTION_PARAMETER = "2"
     val NICKNAMES = "3"
     val TIMESTAMPS = "4"
+    val THEME = "5"
 
     fun persist() {
         val maps = mapOf(
@@ -84,7 +87,8 @@ class Parameters (context: Context) : ViewModel(){
             SAVE_ENCRYPTION_PARAMETER to mapOf("" to saveEncryptionParameter.value),
             NICKNAMES to numberToNickname.toMap(),
             TIMESTAMPS to numberToLastMessageTime.toMap(),
-        )
+            THEME to mapOf("" to theme.value),
+            )
         val saveEncryptor = engineGen.createEngine("AES", saveEncryptionParameter.value)
         val saveString = saveSystem.stringifyMapMap(maps)
         val encryptedSaveString = saveEncryptor.encrypt(saveString)
@@ -104,6 +108,7 @@ class Parameters (context: Context) : ViewModel(){
             saveEncryptionParameter.value = maps.getOrDefault(SAVE_ENCRYPTION_PARAMETER, mapOf("" to DEFAULT_ENCRYPTION_PARAMETERS)).getOrDefault("", DEFAULT_ENCRYPTION_PARAMETERS)
             numberToNickname = maps[NICKNAMES]?.toMutableMap() ?: mutableMapOf()
             numberToLastMessageTime = maps[TIMESTAMPS]?.toMutableMap() ?: mutableMapOf()
+            theme.value = maps.getOrDefault(THEME, mapOf("" to "System")).getOrDefault("", "System")
 
             loaded.value = true
         } catch (_: Exception){}
@@ -111,12 +116,13 @@ class Parameters (context: Context) : ViewModel(){
 
     // Editable Parameters
     fun persistentEditableParams(currentContact: PhoneContact?) : List<EditableParameter> {
-        return listOf(
+        return listOfNotNull(
             encryptionAlgorithmSelector(currentContact),
             encryptionParameterSelector(currentContact),
             globalEncryptionKeySelector(),
             nicknameSelector(currentContact),
-        ).filterNotNull()
+            primaryThemeSelector(),
+        )
     }
 
     private fun encryptionAlgorithmSelector(currentContact: PhoneContact?) : EditableParameter{
@@ -168,6 +174,17 @@ class Parameters (context: Context) : ViewModel(){
             }},
             currentState = getNicknameFor(currentState.number, currentState.name),
             comment = " (Leave this blank -> Reset to ${currentState.name})"
+        )
+    }
+    private fun primaryThemeSelector() : EditableParameter{
+        return EditableParameter(
+            name = "Color Theme",
+            setter = { key: String -> run {
+                theme.value = key
+                persist()
+            }},
+            currentState = theme.value,
+            options = listOf("System", "Dark", "Light", "Custom")
         )
     }
 

@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val params = Parameters(LocalContext.current)
-            EsmsTheme {
+            EsmsTheme (params) {
                 val navController = rememberNavController()
                 Navigation(navController, params)
             }
