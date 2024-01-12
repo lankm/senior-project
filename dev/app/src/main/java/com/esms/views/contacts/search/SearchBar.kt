@@ -34,14 +34,15 @@ fun SearchBar(state: MutableState<Boolean>, filterString: MutableState<String>) 
             BasicTextField(
                 value = filterString.value,
                 onValueChange = {filterString.value = it.lowercase()},
-                textStyle = TextStyle(color = MaterialTheme.colors.onSurface),
+                textStyle = TextStyle(color = MaterialTheme.colors.onBackground),
                 modifier = Modifier
                     .background(
                         shape = RoundedCornerShape(padding),
                         color = MaterialTheme.colors.background
                     )
                     .fillMaxWidth()
-                    .fillMaxHeight(.85F),
+                    .fillMaxHeight(.85F)
+                    .padding(padding),
             )
         }
     }
