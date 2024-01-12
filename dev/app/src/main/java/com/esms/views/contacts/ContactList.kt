@@ -17,20 +17,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.esms.models.Parameters
 import com.esms.models.PhoneContact
 import com.esms.services.readContacts
 
 @Composable
-fun ContactList(navController: NavController, params: Parameters) {
+fun ContactList(navController: NavController, params: Parameters, filterString: MutableState<String>) {
     // retrieve the list of contacts
     val context = LocalContext.current
     val allContacts = remember { mutableListOf<PhoneContact>() }
@@ -45,7 +44,7 @@ fun ContactList(navController: NavController, params: Parameters) {
         modifier = Modifier.fillMaxSize(),
         state = scrollState
     ) {
-        allContacts.forEach { contact ->
+        allContacts.filter { params.getNicknameFor(it.number, it.name).lowercase().contains(filterString.value) }.forEach { contact ->
             item {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -86,13 +85,4 @@ fun ContactList(navController: NavController, params: Parameters) {
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun ContactListPreview() {
-    ContactList(
-        navController = rememberNavController(),
-        params = Parameters(LocalContext.current)
-    )
 }
