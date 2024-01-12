@@ -10,6 +10,7 @@ import com.esms.services.engines.CryptographyEngine
 import com.esms.services.engines.custom.PlainTextEngine
 import com.esms.views.parameters.selectors.FreeSelector
 import com.esms.views.parameters.selectors.OptionsSelector
+import com.esms.views.parameters.selectors.SectionMarker
 import java.lang.Long.max
 import java.lang.Long.parseLong
 
@@ -17,6 +18,7 @@ class Parameters (context: Context) : ViewModel(){
     // Constants
     val DEFAULT_ENCRYPTION_ALGORITHM = "AES"
     val DEFAULT_ENCRYPTION_PARAMETERS = "insecure"
+    val DEFAULT_LABEL = "(Default)"
 
     // Services
     private val engineGen = CryptographyEngineGenerator()
@@ -119,36 +121,75 @@ class Parameters (context: Context) : ViewModel(){
 
     // Editable Parameters
     fun persistentEditableParams(currentContact: PhoneContact?) : List<@Composable ()->Unit> {
+        val globalParams = currentContact == null
         return listOfNotNull(
+            SectionMarker("Contact Specific Settings", isNull = globalParams),
+            nicknameSelector(currentContact),
+            SectionMarker("Encryption Settings", isNull = globalParams),
             encryptionAlgorithmSelector(currentContact),
             encryptionParameterSelector(currentContact),
+            SectionMarker("Default Encryption Settings"),
+            defaultEncryptionAlgorithmSelector(),
+            defaultEncryptionParameterSelector(),
             globalEncryptionKeySelector(),
-            nicknameSelector(currentContact),
+            SectionMarker("Global Misc Settings"),
             primaryThemeSelector(),
         )
     }
 
-    private fun encryptionAlgorithmSelector(currentContact: PhoneContact?) : @Composable ()->Unit{
+    private fun encryptionAlgorithmSelector(currentContact: PhoneContact?) : (@Composable ()->Unit)? {
+        if(currentContact == null)
+            return null
         return OptionsSelector(
-            name = "${defaultAlterationString(currentContact)}Encryption Algorithm",
+            name = "Encryption Algorithm",
             setter = { algorithm: String -> run {
-                numberToEncryptionAlgorithm[currentContact?.number ?: ""] = algorithm
+                if (algorithm == DEFAULT_LABEL)
+                    numberToEncryptionAlgorithm.remove(currentContact.number)
+                else
+                    numberToEncryptionAlgorithm[currentContact.number] = algorithm
                 persist()
-                setCurrentEncryptionEngine(currentContact?.number ?: "")
+                setCurrentEncryptionEngine(currentContact.number)
             }},
-            options = CryptographyEngineGenerator().getRegisteredEngines(),
-            currentState = getEncryptionAlgorithmFor(currentContact?.number ?: "")
+            options = CryptographyEngineGenerator().getRegisteredEngines() + DEFAULT_LABEL,
+            currentState = getEncryptionAlgorithmFor(currentContact.number) +
+                if(!numberToEncryptionAlgorithm.containsKey(currentContact.number))
+                    " $DEFAULT_LABEL" else ""
         )
     }
-    private fun encryptionParameterSelector(currentContact: PhoneContact?) : @Composable ()->Unit {
+    private fun encryptionParameterSelector(currentContact: PhoneContact?) : (@Composable ()->Unit)? {
+        if(currentContact == null)
+            return null
         return FreeSelector(
-            name = "${defaultAlterationString(currentContact)}Encryption Parameter",
+            name = "Encryption Parameter",
             setter = { algorithm: String -> run {
-                numberToEncryptionParameters[currentContact?.number ?: ""] = algorithm
+                numberToEncryptionParameters[currentContact.number] = algorithm
                 persist()
-                setCurrentEncryptionEngine(currentContact?.number ?: "")
+                setCurrentEncryptionEngine(currentContact.number)
             }},
-            currentState = getEncryptionParametersFor(currentContact?.number ?: "")
+            currentState = getEncryptionParametersFor(currentContact.number)
+        )
+    }
+    private fun defaultEncryptionAlgorithmSelector() : @Composable ()->Unit{
+        return OptionsSelector(
+            name = "Default Encryption Algorithm",
+            setter = { algorithm: String -> run {
+                numberToEncryptionAlgorithm[""] = algorithm
+                persist()
+                setCurrentEncryptionEngine("")
+            }},
+            options = CryptographyEngineGenerator().getRegisteredEngines(),
+            currentState = getEncryptionAlgorithmFor("")
+        )
+    }
+    private fun defaultEncryptionParameterSelector() : @Composable ()->Unit {
+        return FreeSelector(
+            name = "Default Encryption Parameter",
+            setter = { algorithm: String -> run {
+                numberToEncryptionParameters[""] = algorithm
+                persist()
+                setCurrentEncryptionEngine("")
+            }},
+            currentState = getEncryptionParametersFor("")
         )
     }
     private fun globalEncryptionKeySelector() : @Composable ()->Unit {
