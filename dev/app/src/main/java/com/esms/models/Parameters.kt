@@ -143,17 +143,17 @@ class Parameters (context: Context) : ViewModel(){
         return OptionsSelector(
             name = "Encryption Algorithm",
             setter = { algorithm: String -> run {
-                if (algorithm == DEFAULT_LABEL)
+                if (algorithm.contains(DEFAULT_LABEL))
                     numberToEncryptionAlgorithm.remove(currentContact.number)
                 else
                     numberToEncryptionAlgorithm[currentContact.number] = algorithm
                 persist()
                 setCurrentEncryptionEngine(currentContact.number)
             }},
-            options = CryptographyEngineGenerator().getRegisteredEngines() + DEFAULT_LABEL,
+            options = listOf("${getEncryptionAlgorithmFor("")} $DEFAULT_LABEL") +
+                      CryptographyEngineGenerator().getRegisteredEngines(),
             currentState = getEncryptionAlgorithmFor(currentContact.number) +
-                if(!numberToEncryptionAlgorithm.containsKey(currentContact.number))
-                    " $DEFAULT_LABEL" else ""
+                           defaultLabelIfDefault(currentContact)
         )
     }
     private fun encryptionParameterSelector(currentContact: PhoneContact?) : (@Composable ()->Unit)? {
@@ -238,7 +238,7 @@ class Parameters (context: Context) : ViewModel(){
     }
 
     // Private Helper Functions
-    private fun defaultAlterationString(currentContact: PhoneContact?): String {
-        return if (currentContact == null) "Default " else ""
+    private fun defaultLabelIfDefault(currentContact: PhoneContact): String {
+        return if (!numberToEncryptionAlgorithm.containsKey(currentContact.number)) " $DEFAULT_LABEL" else ""
     }
 }
