@@ -1,17 +1,22 @@
 package com.esms.models
 
 import android.content.Context
+import androidx.compose.material.Colors
+import androidx.compose.material.darkColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import com.esms.services.CryptographyEngineGenerator
 import com.esms.services.SharedPreferencesService
 import com.esms.services.engines.CryptographyEngine
 import com.esms.services.engines.custom.PlainTextEngine
+import com.esms.views.parameters.selectors.ColorSelector
 import com.esms.views.parameters.selectors.FreeSelector
+import com.esms.views.parameters.selectors.ModalSelector
 import com.esms.views.parameters.selectors.OptionsSelector
 import com.esms.views.parameters.selectors.SectionMarker
-import java.lang.Long.max
 import java.lang.Long.parseLong
 
 class Parameters (context: Context) : ViewModel(){
@@ -28,6 +33,8 @@ class Parameters (context: Context) : ViewModel(){
     var loaded = mutableStateOf(false)
     var currentContact = mutableStateOf<PhoneContact?>(null)
         private set
+
+    val showSelectors = mutableStateOf(true)
 
     var currentEncryptionEngine = mutableStateOf<CryptographyEngine>(PlainTextEngine(""))
         private set
@@ -77,6 +84,70 @@ class Parameters (context: Context) : ViewModel(){
 
     var theme = mutableStateOf("System"); // Light, Dark, System, Custom
 
+    private val customColors = mutableStateOf(
+        darkColors(
+            primary = Color(0xFF1111AA),
+            primaryVariant = Color(0xFF116666),
+            onPrimary = Color(0xFFEEEEEE),
+
+            secondary = Color(0xFF771177),
+            secondaryVariant = Color(0xFF804040),
+            onSecondary = Color(0xFFEEEEEE),
+
+            background = Color(0xFF333333),
+            onBackground = Color(0xFFEEEEEE),
+
+            surface = Color(0xFF111111),
+            onSurface = Color(0xFFEEEEEE),
+
+            error = Color(0xFFFF7070),
+            onError = Color(0xFF111111),
+        )
+    )
+    private var customColorsMap = getCustomColorsMap().toMutableMap()
+    fun getCustomColors() : Colors {
+        return customColors.value;
+    }
+    private fun setCustomColorsWithMap(stringMap: Map<String, String>) {
+        if(stringMap.isEmpty())
+            return
+        customColors.value = darkColors(
+            primary = Color(stringMap["primary"]!!.toInt()),
+            primaryVariant = Color(stringMap["primaryVariant"]!!.toInt()),
+            onPrimary = Color(stringMap["onPrimary"]!!.toInt()),
+
+            secondary = Color(stringMap["secondary"]!!.toInt()),
+            secondaryVariant = Color(stringMap["secondaryVariant"]!!.toInt()),
+            onSecondary = Color(stringMap["onSecondary"]!!.toInt()),
+
+            background = Color(stringMap["background"]!!.toInt()),
+            onBackground = Color(stringMap["onBackground"]!!.toInt()),
+
+            surface = Color(stringMap["surface"]!!.toInt()),
+            onSurface = Color(stringMap["onSurface"]!!.toInt()),
+
+            error = Color(stringMap["error"]!!.toInt()),
+            onError = Color(stringMap["onError"]!!.toInt()),
+        )
+        customColorsMap = stringMap.toMutableMap()
+    }
+    private fun getCustomColorsMap() : Map<String, String>{
+        return mapOf(
+            "primary" to customColors.value.primary.toArgb().toString(),
+            "primaryVariant" to customColors.value.primaryVariant.toArgb().toString(),
+            "onPrimary" to customColors.value.onPrimary.toArgb().toString(),
+            "secondary" to customColors.value.secondary.toArgb().toString(),
+            "secondaryVariant" to customColors.value.secondaryVariant.toArgb().toString(),
+            "onSecondary" to customColors.value.onSecondary.toArgb().toString(),
+            "background" to customColors.value.background.toArgb().toString(),
+            "onBackground" to customColors.value.onBackground.toArgb().toString(),
+            "surface" to customColors.value.surface.toArgb().toString(),
+            "onSurface" to customColors.value.onSurface.toArgb().toString(),
+            "error" to customColors.value.error.toArgb().toString(),
+            "onError" to customColors.value.onError.toArgb().toString(),
+        )
+    }
+
     // Persistence Functions
     val ENCRYPTION_ALGORITHMS = "0"
     val ENCRYPTION_PARAMETERS = "1"
@@ -84,6 +155,7 @@ class Parameters (context: Context) : ViewModel(){
     val NICKNAMES = "3"
     val TIMESTAMPS = "4"
     val THEME = "5"
+    val CUSTOM_THEME = "6"
 
     fun persist() {
         val maps = mapOf(
@@ -93,6 +165,7 @@ class Parameters (context: Context) : ViewModel(){
             NICKNAMES to numberToNickname.toMap(),
             TIMESTAMPS to numberToLastMessageTime.toMap(),
             THEME to mapOf("" to theme.value),
+            CUSTOM_THEME to getCustomColorsMap(),
             )
         val saveEncryptor = engineGen.createEngine("AES", saveEncryptionParameter.value)
         val saveString = saveSystem.stringifyMapMap(maps)
@@ -114,6 +187,7 @@ class Parameters (context: Context) : ViewModel(){
             numberToNickname = maps[NICKNAMES]?.toMutableMap() ?: mutableMapOf()
             numberToLastMessageTime = maps[TIMESTAMPS]?.toMutableMap() ?: mutableMapOf()
             theme.value = maps.getOrDefault(THEME, mapOf("" to "System")).getOrDefault("", "System")
+            setCustomColorsWithMap(maps.getOrDefault(CUSTOM_THEME, mapOf()))
 
             loaded.value = true
         } catch (_: Exception){}
@@ -132,8 +206,9 @@ class Parameters (context: Context) : ViewModel(){
             defaultEncryptionAlgorithmSelector(),
             defaultEncryptionParameterSelector(),
             globalEncryptionKeySelector(),
-            SectionMarker("Global Misc Settings"),
+            SectionMarker("Theme Settings"),
             primaryThemeSelector(),
+            if(theme.value == "Custom") ModalSelector("Custom Theme Colors", customColorSelectors()) else null,
         )
     }
 
@@ -229,6 +304,34 @@ class Parameters (context: Context) : ViewModel(){
             }},
             currentState = theme.value,
             options = listOf("System", "Dark", "Light", "Custom")
+        )
+    }
+    private fun customColorSelectors() : Array<@Composable ()->Unit> {
+        return listOf(
+                "primary",
+                "primaryVariant",
+                "onPrimary",
+                "secondary",
+                "secondaryVariant",
+                "onSecondary",
+                "background",
+                "onBackground",
+                "surface",
+                "onSurface",
+                "error"
+            ).map { predefinedColorSelector(it) }.toTypedArray()
+    }
+        private fun predefinedColorSelector(name: String) : @Composable () -> Unit {
+        return ColorSelector(
+            name,
+            setter = {
+                color: Color -> run {
+                    customColorsMap[name] = color.toArgb().toString()
+                    setCustomColorsWithMap(customColorsMap)
+                    persist()
+                }
+            },
+            currentState = Color(customColorsMap[name]!!.toInt())
         )
     }
 

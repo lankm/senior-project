@@ -49,25 +49,6 @@ private val lightColors = lightColors(
     onError = Color(0xFF111111),
 )
 
-private val customColors = darkColors( // TODO: Make this editable and saved in params
-    primary = Color(0xFF1111AA),
-    primaryVariant = Color(0xFF116666),
-    onPrimary = Color(0xFFEEEEEE),
-
-    secondary = Color(0xFF771177),
-    secondaryVariant = Color(0xFF804040),
-    onSecondary = Color(0xFFEEEEEE),
-
-    background = Color(0xFF333333),
-    onBackground = Color(0xFFEEEEEE),
-
-    surface = Color(0xFF111111),
-    onSurface = Color(0xFFEEEEEE),
-
-    error = Color(0xFFFF7070),
-    onError = Color(0xFF111111),
-)
-
 @Composable
 fun EsmsTheme(
     params: Parameters,
@@ -88,8 +69,8 @@ fun EsmsTheme(
             activity?.window?.statusBarColor = lightColors.surface.toArgb()
             lightColors }
             else -> {
-                activity?.window?.statusBarColor = customColors.surface.toArgb()
-                customColors }
+                activity?.window?.statusBarColor = params.getCustomColors().surface.toArgb()
+                params.getCustomColors() }
         },
         typography = Typography,
         content = content
