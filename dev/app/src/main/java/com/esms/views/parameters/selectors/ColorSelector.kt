@@ -19,5 +19,6 @@ fun ColorSelector(
             } catch(_: Exception) {}
         },
         currentState = "#" + currentState.toArgb().toHexString().padStart(8, '0'),
-        comment = "Format: #AARRGGBB where XX is 00-FF")
+        comment = "Format: #AARRGGBB where XX is 00-FF",
+        tint = currentState)
 }
