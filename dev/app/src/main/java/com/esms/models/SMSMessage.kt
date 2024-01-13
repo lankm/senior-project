@@ -7,12 +7,15 @@ import java.util.Locale
 data class SMSMessage(
     val body: String,
     val extAddr: String,
-    val date: Long,
+    var date: Long,
     val read: Boolean,
     val type: Int,
     val thread: Int,
     // val service: String // null for some reason
 ) {
+    init {
+        date -= type*1000
+    }
     companion object {
         const val SENT = 0
         const val RECEIVED = 1}

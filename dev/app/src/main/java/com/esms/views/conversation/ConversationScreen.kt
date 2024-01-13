@@ -17,7 +17,7 @@ fun ConversationScreen(navController: NavController, params: Parameters) {
     Scaffold (
         topBar = { ConversationTopBar(navController, params) },
         content = { innerPadding -> Box(modifier = Modifier.padding(innerPadding)) {
-            ConversationHistory(params)
+            ConversationHistory(navController, params)
         }},
         bottomBar = {MessageInput(LocalContext.current, params = params)}
     )
