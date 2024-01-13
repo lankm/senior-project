@@ -9,9 +9,11 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
@@ -30,8 +32,8 @@ fun ConversationHistory(navController: NavController, params: Parameters) {
     val currentAddress = currentContact.number
     val context = LocalContext.current
     val smsService = SmsService(context)
-    val allMessages = remember { mutableStateOf(smsService.readMessages(currentAddress)) }
-    if(allMessages.value.isEmpty()) {
+    var allMessages by remember { mutableStateOf(smsService.readMessages(currentAddress)) }
+    if(allMessages.isEmpty()) {
         navController.popBackStack()
         Toast.makeText(context, "No messages with ${params.getNicknameFor(currentAddress, currentContact.name)}", Toast.LENGTH_LONG).show()
         return
@@ -39,19 +41,22 @@ fun ConversationHistory(navController: NavController, params: Parameters) {
     val listHeight = remember { mutableIntStateOf(0)}
     params.setCurrentMessageAdder { msg: SMSMessage ->
         run {
-            allMessages.value += msg
+            allMessages += msg
         }
     }
-    val scrollState = rememberLazyListState(2 * allMessages.value.size)
-    LaunchedEffect(allMessages.value.size) {
-        scrollState.scrollToItem(index = 2 * allMessages.value.size - 1)
+    val scrollState = rememberLazyListState(2 * allMessages.size)
+    LaunchedEffect(allMessages.size) {
+        scrollState.scrollToItem(index = 2 * allMessages.size - 1)
     }
     LaunchedEffect(listHeight.intValue) {
-        scrollState.scrollToItem(index = 2 * allMessages.value.size - 1)
+        scrollState.scrollToItem(index = 2 * allMessages.size - 1)
     }
-    SmsListener { newMessage: SMSMessage ->
-        if (newMessage.extAddr.replace(Regex("[)(+\\- ]"), "") in currentAddress.replace(Regex("[)(+\\- ]"), "")) {
-            allMessages.value += newMessage
+    SmsListener { newMessage: SMSMessage -> run {
+            val origin = newMessage.extAddr.replace(Regex("[)(+\\- ]"),"")
+            if ( origin.substring(origin.length-10) in currentAddress.replace(Regex("[)(+\\- ]"), "")
+            ) { // This will match numbers with different country codes and the same base 10 numbers
+                allMessages += newMessage
+            }
         }
     }
     var index = 0
@@ -61,7 +66,7 @@ fun ConversationHistory(navController: NavController, params: Parameters) {
             .onSizeChanged { size -> listHeight.intValue = size.height },
         state = scrollState
     ) {
-        allMessages.value.groupBy { it.date.parseDate().split(" ").first() }
+        allMessages.groupBy { it.date.parseDate().split(" ").first() }
             .forEach { (date, smsMessages) ->
                 item {
                     val dateParts = date.split("/")
