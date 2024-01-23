@@ -15,13 +15,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.esms.views.contacts.search.SearchBar
+import com.esms.views.contacts.search.SearchButton
 
 @Composable
-fun ContactsTopBar(navController: NavController) {
+fun ContactsTopBar(navController: NavController, filterString: MutableState<String>) {
+    val searchBarState = remember { mutableStateOf(false) }
     Row(verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -31,16 +37,7 @@ fun ContactsTopBar(navController: NavController) {
             .padding(5.dp)
     ) {
         // Left IconButton
-        IconButton(
-            onClick = { /* TODO: implement adding a contact. probably a modal */ },
-            modifier = Modifier.size(48.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Add contact",
-                tint = MaterialTheme.colors.onSurface
-            )
-        }
+        SearchButton(searchBarState)
 
         // Center content
         Text(text = "ESMS", color = MaterialTheme.colors.onSurface)
@@ -57,4 +54,5 @@ fun ContactsTopBar(navController: NavController) {
             )
         }
     }
+    SearchBar(searchBarState, filterString)
 }

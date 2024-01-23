@@ -19,10 +19,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.esms.R
+import com.esms.models.Parameters
 import com.esms.models.PhoneContact
 
 @Composable
-fun ContactBox(contact: PhoneContact) {
+fun ContactBox(contact: PhoneContact, params: Parameters) {
     val fallbackPainter = painterResource(id = R.drawable.ic_launcher_background)
     Row(verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -34,7 +35,7 @@ fun ContactBox(contact: PhoneContact) {
             placeholder = fallbackPainter,
             error = fallbackPainter,
             fallback = fallbackPainter,
-            contentDescription = contact.name,
+            contentDescription = params.getNicknameFor(contact.number, contact.name),
             modifier = Modifier
                 .clip(CircleShape)
                 .fillMaxHeight()
@@ -48,7 +49,7 @@ fun ContactBox(contact: PhoneContact) {
         ) {
             // Name
             Text(
-                text = contact.name,
+                text = params.getNicknameFor(contact.number, contact.name),
                 color = MaterialTheme.colors.onSurface
             )
             // Number
@@ -63,11 +64,6 @@ fun ContactBox(contact: PhoneContact) {
 
 
 
-@Preview
-@Composable
-fun ContactBoxPreview() {
-    ContactBox(sampleContact)
-}
 //TODO remove this
 val sampleContact = PhoneContact(
     pfp = null,

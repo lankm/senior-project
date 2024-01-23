@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import com.esms.models.Parameters
 
 private val darkColors = darkColors(
     primary = Color(0xFF1111AA),
@@ -47,23 +48,29 @@ private val lightColors = lightColors(
     error = Color(0xFFFF7070),
     onError = Color(0xFF111111),
 )
-// TODO: Do a big theme refactor
 
 @Composable
 fun EsmsTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    params: Parameters,
     content: @Composable () -> Unit
 ) {
+    val theme = if (params.theme.value == "System")
+                    (if (isSystemInDarkTheme()) "Dark" else "Light")
+                else params.theme.value
     val context = LocalContext.current
     val activity = context as? Activity
 
     MaterialTheme(
-        colors = if (darkTheme) {
-            activity?.window?.statusBarColor = darkColors.surface.toArgb()
-            darkColors
-        } else {
-            activity?.window?.statusBarColor = lightColors.surface.toArgb()
-            lightColors
+        colors = when (theme) {
+            "Custom" -> {
+                activity?.window?.statusBarColor = params.getCustomColors().surface.toArgb()
+                params.getCustomColors() }
+            "Light" -> {
+                activity?.window?.statusBarColor = lightColors.surface.toArgb()
+                lightColors }
+            else -> {
+                activity?.window?.statusBarColor = darkColors.surface.toArgb()
+                darkColors }
         },
         typography = Typography,
         content = content
