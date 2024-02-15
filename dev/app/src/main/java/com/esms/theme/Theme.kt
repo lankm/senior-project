@@ -62,15 +62,15 @@ fun EsmsTheme(
 
     MaterialTheme(
         colors = when (theme) {
-            "Custom" -> {
-                activity?.window?.statusBarColor = params.getCustomColors().surface.toArgb()
-                params.getCustomColors() }
-            "Light" -> {
-                activity?.window?.statusBarColor = lightColors.surface.toArgb()
-                lightColors }
-            else -> {
+            "Dark" -> {
                 activity?.window?.statusBarColor = darkColors.surface.toArgb()
                 darkColors }
+            "Light" -> {
+            activity?.window?.statusBarColor = lightColors.surface.toArgb()
+            lightColors }
+            else -> {
+                activity?.window?.statusBarColor = params.getCustomColors().surface.toArgb()
+                params.getCustomColors() }
         },
         typography = Typography,
         content = content

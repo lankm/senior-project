@@ -104,7 +104,7 @@ class Parameters (context: Context) : ViewModel(){
             onError = Color(0xFF111111),
         )
     )
-    private lateinit var customColorsMap: MutableMap<String, String>
+    private var customColorsMap = getCustomColorsMap().toMutableMap()
     fun getCustomColors() : Colors {
         return customColors.value;
     }
