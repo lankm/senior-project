@@ -35,7 +35,7 @@ fun MessageInput(context: Context, params: Parameters) {
     val currentAddress = currentContact.number
     var text by remember { mutableStateOf("") }
     val padding = 10.dp
-    
+
     Row (modifier = Modifier.padding(padding, padding), horizontalArrangement = Arrangement.SpaceBetween) {
         BasicTextField(
             value = text,
@@ -84,8 +84,8 @@ private fun sendMessageAsync(context: Context, params: Parameters, text: String,
         )
     )
     thread(start = true) {
-    SmsService(context).sendMessage(
-        currentAddress,
-        encryptedText
-    )}
+        SmsService(context).sendMessage(
+            currentAddress,
+            encryptedText
+        )}
 }
