@@ -8,11 +8,18 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 
 @Composable
-fun SearchButton(state: MutableState<Boolean>) {
+fun SearchButton(state: MutableState<Boolean>, filterString: MutableState<String> = mutableStateOf("")) {
     IconButton(
-        onClick = { state.value = !state.value },
+        onClick = {
+            if(filterString.value.isEmpty()) {
+                state.value = !state.value
+            } else {
+                filterString.value = ""
+            }
+        },
     ) {
         Icon(
             imageVector = if(state.value) Icons.Default.Close else Icons.Default.Search,
