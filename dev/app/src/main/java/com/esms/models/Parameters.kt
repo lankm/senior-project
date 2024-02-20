@@ -80,7 +80,7 @@ class Parameters (context: Context) : ViewModel(){
         }
     }
 
-    var theme = mutableStateOf("System"); // Light, Dark, System, Custom
+    var theme = mutableStateOf("System") // Light, Dark, System, Custom
 
     private val customColors = mutableStateOf(
         darkColors(
@@ -102,9 +102,9 @@ class Parameters (context: Context) : ViewModel(){
             onError = Color(0xFF111111),
         )
     )
-    private lateinit var customColorsMap: MutableMap<String, String>
+    private val customColorsMap = mutableMapOf<String, String>()
     fun getCustomColors() : Colors {
-        return customColors.value;
+        return customColors.value
     }
     private fun setCustomColorsWithMap(stringMap: Map<String, String>) {
         if(stringMap.isEmpty())
@@ -127,7 +127,9 @@ class Parameters (context: Context) : ViewModel(){
             error = Color(stringMap["error"]!!.toInt()),
             onError = Color(stringMap["onError"]!!.toInt()),
         )
-        customColorsMap = stringMap.toMutableMap()
+        for (entry in stringMap.entries) {
+            customColorsMap[entry.key] = entry.value
+        }
     }
     private fun getCustomColorsMap() : Map<String, String>{
         return mapOf(
@@ -185,21 +187,21 @@ class Parameters (context: Context) : ViewModel(){
             numberToNickname = maps[NICKNAMES]?.toMutableMap() ?: mutableMapOf()
             numberToLastMessageTime = maps[TIMESTAMPS]?.toMutableMap() ?: mutableMapOf()
             theme.value = maps.getOrDefault(THEME, mapOf("" to "System")).getOrDefault("", "System")
-            setCustomColorsWithMap(maps.getOrDefault(CUSTOM_THEME, mapOf()))
+            setCustomColorsWithMap(maps.getOrDefault(CUSTOM_THEME, getCustomColorsMap()))
 
             loaded.value = true
         } catch (_: Exception){}
     }
 
     // Editable Parameters
-    fun persistentEditableParams(currentContact: PhoneContact?) : List<@Composable ()->Unit> {
-        val globalParams = currentContact == null
+    fun persistentEditableParams() : List<@Composable ()->Unit> {
+        val globalParams = currentContact.value == null
         return listOfNotNull(
             SectionMarker("Contact Specific Settings", isNull = globalParams),
-            nicknameSelector(currentContact),
+            nicknameSelector(currentContact.value),
             SectionMarker("Encryption Settings", isNull = globalParams),
-            encryptionAlgorithmSelector(currentContact),
-            encryptionParameterSelector(currentContact),
+            encryptionAlgorithmSelector(currentContact.value),
+            encryptionParameterSelector(currentContact.value),
             SectionMarker("Default Encryption Settings"),
             defaultEncryptionAlgorithmSelector(),
             defaultEncryptionParameterSelector(),
@@ -324,7 +326,7 @@ class Parameters (context: Context) : ViewModel(){
             setter = {
                 color: Color -> run {
                     customColorsMap[name] = color.toArgb().toString()
-                    setCustomColorsWithMap(customColorsMap)
+                    setCustomColorsWithMap(customColorsMap.toMap())
                     persist()
                 }
             },
