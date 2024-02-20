@@ -23,7 +23,7 @@ class Parameters (context: Context) : ViewModel(){
     // Constants
     val DEFAULT_ENCRYPTION_ALGORITHM = "AES"
     val DEFAULT_ENCRYPTION_PARAMETERS = "insecure"
-    val DEFAULT_LABEL = "(Default)"
+    val DEFAULT_LABEL = "Default"
 
     // Services
     private val engineGen = CryptographyEngineGenerator()
@@ -33,8 +33,6 @@ class Parameters (context: Context) : ViewModel(){
     var loaded = mutableStateOf(false)
     var currentContact = mutableStateOf<PhoneContact?>(null)
         private set
-
-    val showSelectors = mutableStateOf(true)
 
     var currentEncryptionEngine = mutableStateOf<CryptographyEngine>(PlainTextEngine(""))
         private set
@@ -225,10 +223,9 @@ class Parameters (context: Context) : ViewModel(){
                 persist()
                 setCurrentEncryptionEngine(currentContact.number)
             }},
-            options = listOf("${getEncryptionAlgorithmFor("")} $DEFAULT_LABEL") +
+            options = listOf("$DEFAULT_LABEL (${getEncryptionAlgorithmFor("")})") +
                       CryptographyEngineGenerator().getRegisteredEngines(),
-            currentState = getEncryptionAlgorithmFor(currentContact.number) +
-                           defaultLabelIfDefault(currentContact)
+            currentState = defaultLabelIfDefault(currentContact, getEncryptionAlgorithmFor(currentContact.number))
         )
     }
     private fun encryptionParameterSelector(currentContact: PhoneContact?) : (@Composable ()->Unit)? {
@@ -341,7 +338,10 @@ class Parameters (context: Context) : ViewModel(){
     }
 
     // Private Helper Functions
-    private fun defaultLabelIfDefault(currentContact: PhoneContact): String {
-        return if (!numberToEncryptionAlgorithm.containsKey(currentContact.number)) " $DEFAULT_LABEL" else ""
+    private fun defaultLabelIfDefault(currentContact: PhoneContact, currentAlgorithm: String): String {
+        return if (!numberToEncryptionAlgorithm.containsKey(currentContact.number))
+            "$DEFAULT_LABEL ($currentAlgorithm)"
+        else
+            currentAlgorithm
     }
 }
