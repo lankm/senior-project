@@ -19,7 +19,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavController
-import com.esms.models.Parameters
+import com.esms.models.LocalParameters
 import com.esms.models.SMSMessage
 import com.esms.models.parseDate
 import com.esms.services.SmsListener
@@ -27,7 +27,8 @@ import com.esms.services.SmsService
 
 
 @Composable
-fun ConversationHistory(navController: NavController, params: Parameters) {
+fun ConversationHistory(navController: NavController) {
+    val params = LocalParameters.current
     val currentContact = remember {params.currentContact.value!!}
     val currentAddress = currentContact.number
     val context = LocalContext.current
@@ -86,7 +87,6 @@ fun ConversationHistory(navController: NavController, params: Parameters) {
                         content = it.body,
                         time = it.date,
                         received = it.type == 1,
-                        params = params
                     )
                     params.setLastMessageTimeFor(currentContact.number, it.date)
                 }

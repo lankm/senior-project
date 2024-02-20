@@ -5,10 +5,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.esms.models.Parameters
+import com.esms.models.LocalParameters
 
 @Composable
-fun ParametersList(params: Parameters) {
+fun ParametersList() {
+    val params = LocalParameters.current
     val editableParams = params.persistentEditableParams()
     val scrollState = rememberLazyListState()
     LazyColumn(

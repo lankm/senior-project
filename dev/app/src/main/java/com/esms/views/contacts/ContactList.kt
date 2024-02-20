@@ -24,14 +24,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.esms.models.Parameters
+import com.esms.models.LocalParameters
 import com.esms.models.PhoneContact
 import com.esms.services.readContacts
 
 @Composable
-fun ContactList(navController: NavController, params: Parameters, filterString: MutableState<String>) {
-    // retrieve the list of contacts
+fun ContactList(navController: NavController, filterString: MutableState<String>) {
+    val params = LocalParameters.current
     val context = LocalContext.current
+    // retrieve the list of contacts
     val allContacts = remember { mutableListOf<PhoneContact>() }
     LaunchedEffect(key1 = Unit) {
         val contact = readContacts(context = context)
@@ -63,7 +64,7 @@ fun ContactList(navController: NavController, params: Parameters, filterString: 
                                 navController.navigate("conversation")
                             }
                     ) {
-                        ContactBox(contact, params)
+                        ContactBox(contact)
                     }
 
 

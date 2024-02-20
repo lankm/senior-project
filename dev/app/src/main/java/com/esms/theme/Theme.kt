@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import com.esms.models.Parameters
+import com.esms.models.LocalParameters
 
 private val darkColors = darkColors(
     primary = Color(0xFF1111AA),
@@ -51,9 +51,9 @@ private val lightColors = lightColors(
 
 @Composable
 fun EsmsTheme(
-    params: Parameters,
     content: @Composable () -> Unit
 ) {
+    val params = LocalParameters.current
     val theme = if (params.theme.value == "System")
                     (if (isSystemInDarkTheme()) "Dark" else "Light")
                 else params.theme.value

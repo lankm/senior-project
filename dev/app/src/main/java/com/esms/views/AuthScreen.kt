@@ -13,11 +13,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import com.esms.models.Parameters
+import com.esms.models.LocalParameters
 import kotlin.system.exitProcess
 
 @Composable
-fun AuthScreen(onAuthGranted: () -> Unit, params: Parameters) {
+fun AuthScreen(onAuthGranted: () -> Unit) {
+    val params = LocalParameters.current
     val context = LocalContext.current
     if(params.loaded.value)
         onAuthGranted()

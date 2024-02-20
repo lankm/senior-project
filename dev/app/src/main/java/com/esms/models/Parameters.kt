@@ -1,13 +1,14 @@
 package com.esms.models
 
-import android.content.Context
+import android.app.Application
 import androidx.compose.material.Colors
 import androidx.compose.material.darkColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import com.esms.services.CryptographyEngineGenerator
 import com.esms.services.SharedPreferencesService
 import com.esms.services.engines.CryptographyEngine
@@ -19,7 +20,7 @@ import com.esms.views.parameters.selectors.OptionsSelector
 import com.esms.views.parameters.selectors.SectionMarker
 import java.lang.Long.parseLong
 
-class Parameters (context: Context) : ViewModel(){
+class Parameters (application: Application) : AndroidViewModel(application){
     // Constants
     val DEFAULT_ENCRYPTION_ALGORITHM = "AES"
     val DEFAULT_ENCRYPTION_PARAMETERS = "insecure"
@@ -27,7 +28,8 @@ class Parameters (context: Context) : ViewModel(){
 
     // Services
     private val engineGen = CryptographyEngineGenerator()
-    private val saveSystem = SharedPreferencesService(context)
+    private val saveSystem = SharedPreferencesService(application.applicationContext)
+    val app = application
 
     // Ephemeral Params
     var loaded = mutableStateOf(false)
@@ -346,4 +348,8 @@ class Parameters (context: Context) : ViewModel(){
         else
             currentAlgorithm
     }
+}
+
+val LocalParameters = staticCompositionLocalOf<Parameters> {
+    error("Parameters ViewModel not provided")
 }

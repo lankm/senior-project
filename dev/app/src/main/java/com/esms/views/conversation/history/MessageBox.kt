@@ -23,15 +23,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.esms.models.Parameters
+import com.esms.models.LocalParameters
 import com.esms.models.parseDate
 
 @Composable
 fun MessageBox(content: String,
                time: Long,
                received: Boolean,
-               params: Parameters
 ) {
+    val params = LocalParameters.current
     val encrypted = remember { mutableStateOf(true) }
     val storedText = remember { mutableStateOf(content) }
 

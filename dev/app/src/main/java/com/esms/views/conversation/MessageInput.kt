@@ -22,13 +22,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import com.esms.models.LocalParameters
 import com.esms.models.Parameters
 import com.esms.models.SMSMessage
 import com.esms.services.SmsService
 import kotlin.concurrent.thread
 
 @Composable
-fun MessageInput(context: Context, params: Parameters) {
+fun MessageInput(context: Context) {
+    val params = LocalParameters.current
     val currentContact = remember {params.currentContact.value!!}
     val currentAddress = currentContact.number
     var text by remember { mutableStateOf("") }
@@ -58,7 +60,7 @@ fun MessageInput(context: Context, params: Parameters) {
                 if(text.isNotEmpty()) {
                     val messageText = text
                     text = ""
-                    sendMessageAsync(context.applicationContext, params, messageText, currentAddress)
+                    sendMessageAsync(params, messageText, currentAddress)
                 }
             },
             modifier = Modifier
@@ -72,7 +74,8 @@ fun MessageInput(context: Context, params: Parameters) {
     }
 }
 
-private fun sendMessageAsync(context: Context, params: Parameters, text: String, currentAddress: String) {
+private fun sendMessageAsync(params: Parameters, text: String, currentAddress: String) {
+    val context = params.app.applicationContext
     val encryptedText = params.currentEncryptionEngine.value.encrypt(text)
     params.runCurrentMessageAdder(
         SMSMessage(

@@ -71,7 +71,7 @@ fun FreeSelector(
                         TextField(
                             value = text,
                             onValueChange = { text = it },
-                            label = { Text("Set value" + comment) }
+                            label = { Text("Set value$comment") }
                         )
                     },
                     confirmButton = {

@@ -21,12 +21,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.esms.models.Parameters
+import com.esms.models.LocalParameters
 import com.esms.views.contacts.ContactBox
 
 
 @Composable
-fun ParametersTopBar(navController: NavController, params: Parameters) {
+fun ParametersTopBar(navController: NavController) {
+    val params = LocalParameters.current
     val currentContact = remember {params.currentContact.value}
     Row(verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -61,7 +62,7 @@ fun ParametersTopBar(navController: NavController, params: Parameters) {
         ) {
             if(currentContact != null)
                 Column(modifier = Modifier.fillMaxHeight()) {
-                    ContactBox(contact = currentContact, params = params)
+                    ContactBox(contact = currentContact)
                     Text(
                         text = "Contact Parameters",
                         color = MaterialTheme.colors.onSurface
