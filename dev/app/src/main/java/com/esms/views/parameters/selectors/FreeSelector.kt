@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 fun FreeSelector(
@@ -30,6 +31,7 @@ fun FreeSelector(
     setter: (String)->Unit,
     currentState: String,
     comment: String = "",
+    tint: Color? = null
 ): @Composable () -> Unit{
     return {
         Row(
@@ -58,7 +60,7 @@ fun FreeSelector(
                 Icon(
                     imageVector = Icons.Default.Edit,
                     contentDescription = "Edit $name",
-                    tint = MaterialTheme.colors.onBackground
+                    tint = tint ?: MaterialTheme.colors.onBackground
                 )
             }
             var text by remember { mutableStateOf(currentState) }
