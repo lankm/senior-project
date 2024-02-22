@@ -86,7 +86,7 @@ fun ConversationHistory(navController: NavController) {
                     MessageBox(
                         content = it.body,
                         time = it.date,
-                        received = it.type == 1,
+                        received = it.type == SMSMessage.RECEIVED,
                     )
                     params.setLastMessageTimeForNumber(currentContact.number, it.date)
                 }

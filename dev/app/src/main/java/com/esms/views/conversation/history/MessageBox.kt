@@ -13,8 +13,10 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,9 +33,12 @@ fun MessageBox(content: String,
                time: Long,
                received: Boolean,
 ) {
+    val INCORRECT_KEY = "System message: <You encryption key is incorrect>"
+
     val params = LocalParameters.current
-    val encrypted = remember { mutableStateOf(true) }
-    val storedText = remember { mutableStateOf(content) }
+    var encrypted by remember { mutableStateOf(true) }
+    val encryptedText by remember { mutableStateOf(content) }
+    var decryptedText by remember { mutableStateOf<String?>(null) }
 
     // modifier values
     val layoutDirection: LayoutDirection = if (received) LayoutDirection.Ltr
@@ -42,7 +47,6 @@ fun MessageBox(content: String,
                                                     else MaterialTheme.colors.surface
     val textColor: Color =                 if (received) MaterialTheme.colors.onSecondary
                                                     else MaterialTheme.colors.onSurface
-    // TODO: change all sp/dp values to depend on the phone model
     val fontSize = 15.sp
     val padding = 10.dp
 
@@ -66,25 +70,25 @@ fun MessageBox(content: String,
             ) {
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 Text(
-                    text = storedText.value,
+                    text = if(encrypted) encryptedText else decryptedText ?: INCORRECT_KEY,
                     fontSize = fontSize,
                     textAlign = TextAlign.Left,
                     color = textColor,
                     modifier = Modifier
                         .padding(padding)
                         .clickable {
-                        if(encrypted.value) {
-                            try {
-                                storedText.value =
-                                    params.currentEncryptionEngine.value.decrypt(storedText.value)
-                            } catch (_:Exception){}
-                            encrypted.value = false
-                        } else {
-                            storedText.value = params.currentEncryptionEngine.value.encrypt(storedText.value)
-                            encrypted.value = true
+                            if(encrypted) {
+                                if(decryptedText == null) {
+                                    decryptedText = try {
+                                        params.currentEncryptionEngine.value.decrypt(encryptedText)
+                                    } catch (_:Exception){ null }
+                                }
+                                encrypted = false
+                            } else {
+                                encrypted = true
+                            }
                         }
-                    }
-                )
+                    )
                 }
             }
 
