@@ -196,7 +196,7 @@ class Parameters (application: Application) : AndroidViewModel(application){
     }
 
     // Editable Parameters
-    fun getListOfEditableParameterSelectorsAndMarkers() : List<@Composable ()->Unit> {
+    fun getEditableParameterElementsList() : List<@Composable ()->Unit> {
         val globalParams = currentContact.value == null
         return listOfNotNull(
             SectionMarker("Contact Specific Settings", isNull = globalParams),
