@@ -1,6 +1,5 @@
 package com.esms.views.conversation.history
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,27 +17,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
-import androidx.navigation.NavController
 import com.esms.models.LocalParameters
 import com.esms.models.SMSMessage
 import com.esms.models.parseDate
 import com.esms.services.SmsListener
 import com.esms.services.SmsService
+import kotlin.math.max
 
 
 @Composable
-fun ConversationHistory(navController: NavController) {
+fun ConversationHistory() {
     val params = LocalParameters.current
     val currentContact = remember {params.currentContact.value!!}
     val currentAddress = currentContact.number
     val context = LocalContext.current
     val smsService = SmsService(context)
     var allMessages by remember { mutableStateOf(smsService.readMessages(currentAddress)) }
-    if(allMessages.isEmpty()) {
-        navController.popBackStack()
-        Toast.makeText(context, "No messages with ${params.getNicknameForNumber(currentAddress, currentContact.name)}", Toast.LENGTH_LONG).show()
-        return
-    } // Prevents no messages error.
     val listHeight = remember { mutableIntStateOf(0)}
     params.setCurrentMessageAdder { msg: SMSMessage ->
         run {
@@ -47,10 +41,10 @@ fun ConversationHistory(navController: NavController) {
     }
     val scrollState = rememberLazyListState(2 * allMessages.size)
     LaunchedEffect(allMessages.size) {
-        scrollState.scrollToItem(index = 2 * allMessages.size - 1)
+        scrollState.scrollToItem(index = max(2 * allMessages.size - 1, 0))
     }
     LaunchedEffect(listHeight.intValue) {
-        scrollState.scrollToItem(index = 2 * allMessages.size - 1)
+        scrollState.scrollToItem(index = max(2 * allMessages.size - 1, 0))
     }
     SmsListener { newMessage: SMSMessage -> run {
             val origin = newMessage.extAddr.replace(Regex("[)(+\\- ]"),"")
@@ -60,7 +54,6 @@ fun ConversationHistory(navController: NavController) {
             }
         }
     }
-    var index = 0
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
