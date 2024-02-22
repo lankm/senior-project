@@ -1,6 +1,10 @@
 package com.esms.views
 
 import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
@@ -13,6 +17,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -27,9 +33,17 @@ fun AuthScreen(onAuthGranted: () -> Unit) {
         onAuthGranted()
     else {
         var text by remember { mutableStateOf("")}
+        // This is just for the background coloring
+        Box(modifier = Modifier
+            .background(MaterialTheme.colors.background)
+            .fillMaxWidth()
+            .fillMaxHeight()
+        )
+
+        // This is the functional portion of this component
         AlertDialog(
             onDismissRequest = { exitProcess(0) },
-            title = { Text(text = "Authenticate") },
+            title = { Text(text = "Authenticate\n") },
             text = {
                 TextField(
                     value = text,
@@ -59,7 +73,8 @@ fun AuthScreen(onAuthGranted: () -> Unit) {
                     onClick = { exitProcess(0) },
                     colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant)
                 ) { Text("Exit", color = MaterialTheme.colors.onPrimary) }
-            }
+            },
+            backgroundColor = MaterialTheme.colors.surface,
         )
     }
 }
