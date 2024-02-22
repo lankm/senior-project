@@ -10,7 +10,7 @@ import com.esms.models.LocalParameters
 @Composable
 fun ParametersList() {
     val params = LocalParameters.current
-    val editableParams = params.persistentEditableParams()
+    val editableParams = params.getListOfEditableParameterSelectorsAndMarkers()
     val scrollState = rememberLazyListState()
     LazyColumn(
         modifier = Modifier.fillMaxSize(),

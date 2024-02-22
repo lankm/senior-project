@@ -35,7 +35,7 @@ fun ContactBox(contact: PhoneContact) {
             placeholder = fallbackPainter,
             error = fallbackPainter,
             fallback = fallbackPainter,
-            contentDescription = params.getNicknameFor(contact.number, contact.name),
+            contentDescription = params.getNicknameForNumber(contact.number, contact.name),
             modifier = Modifier
                 .clip(CircleShape)
                 .fillMaxHeight()
@@ -49,7 +49,7 @@ fun ContactBox(contact: PhoneContact) {
         ) {
             // Name
             Text(
-                text = params.getNicknameFor(contact.number, contact.name),
+                text = params.getNicknameForNumber(contact.number, contact.name),
                 color = MaterialTheme.colors.onSurface
             )
             // Number
@@ -61,12 +61,3 @@ fun ContactBox(contact: PhoneContact) {
 
     }
 }
-
-
-
-//TODO remove this
-val sampleContact = PhoneContact(
-    pfp = null,
-    name = "Dohn Daycom",
-    number = "555-888-9999"
-)

@@ -36,7 +36,7 @@ fun ContactList(navController: NavController, filterString: MutableState<String>
     val allContacts = remember { mutableListOf<PhoneContact>() }
     LaunchedEffect(key1 = Unit) {
         val contact = readContacts(context = context)
-        allContacts += contact.sortedBy { -params.getLastMessageTimeFor(it.number) }
+        allContacts += contact.sortedBy { -params.getLastMessageTimeForNumber(it.number) }
     }
 
     // display the list of contacts
@@ -45,7 +45,7 @@ fun ContactList(navController: NavController, filterString: MutableState<String>
         modifier = Modifier.fillMaxSize(),
         state = scrollState
     ) {
-        allContacts.filter { params.getNicknameFor(it.number, it.name).lowercase().contains(filterString.value) }.forEach { contact ->
+        allContacts.filter { params.getNicknameForNumber(it.number, it.name).lowercase().contains(filterString.value) }.forEach { contact ->
             item {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -60,7 +60,7 @@ fun ContactList(navController: NavController, filterString: MutableState<String>
                         modifier = Modifier
                             .clickable {
                                 params.currentContact.value = contact
-                                params.setCurrentEncryptionEngine(contact.number)
+                                params.setCurrentEncryptionEngineFromNumber(contact.number)
                                 navController.navigate("conversation")
                             }
                     ) {

@@ -36,7 +36,7 @@ fun ConversationHistory(navController: NavController) {
     var allMessages by remember { mutableStateOf(smsService.readMessages(currentAddress)) }
     if(allMessages.isEmpty()) {
         navController.popBackStack()
-        Toast.makeText(context, "No messages with ${params.getNicknameFor(currentAddress, currentContact.name)}", Toast.LENGTH_LONG).show()
+        Toast.makeText(context, "No messages with ${params.getNicknameForNumber(currentAddress, currentContact.name)}", Toast.LENGTH_LONG).show()
         return
     } // Prevents no messages error.
     val listHeight = remember { mutableIntStateOf(0)}
@@ -88,7 +88,7 @@ fun ConversationHistory(navController: NavController) {
                         time = it.date,
                         received = it.type == 1,
                     )
-                    params.setLastMessageTimeFor(currentContact.number, it.date)
+                    params.setLastMessageTimeForNumber(currentContact.number, it.date)
                 }
             }
     }

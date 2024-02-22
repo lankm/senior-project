@@ -47,7 +47,7 @@ class SharedPreferencesService(private val context: Context) {
      * @param map any Map<String, String> that does not contain [KEY_SEPARATOR_CHAR],[PAIR_SEPARATOR_CHAR],[MAP_SEPARATOR_CHAR],[MAP_NAME_SEPARATOR_CHAR]
      * @return a simplified-JSON string representing [map]
      */
-    fun stringifyMap(map: Map<String, String>): String {
+    fun serializeOneMap(map: Map<String, String>): String {
         return map.entries.joinToString(separator = PAIR_SEPARATOR_CHAR) { (key, value) ->
             "$key$KEY_SEPARATOR_CHAR$value"
         }
@@ -57,9 +57,9 @@ class SharedPreferencesService(private val context: Context) {
      * @param map any Map<String, String> that does not contain [KEY_SEPARATOR_CHAR] or [PAIR_SEPARATOR_CHAR]
      * @return a simplified-JSON string representing [map]
      */
-    fun stringifyMapMap(map: Map<String, Map<String, String>>): String {
+    fun serializeMapOfMaps(map: Map<String, Map<String, String>>): String {
         return map.entries.joinToString(separator = MAP_SEPARATOR_CHAR) { (key, value) ->
-            "$key$MAP_NAME_SEPARATOR_CHAR${stringifyMap(value)}"
+            "$key$MAP_NAME_SEPARATOR_CHAR${serializeOneMap(value)}"
         }
     }
 
@@ -69,7 +69,7 @@ class SharedPreferencesService(private val context: Context) {
      * @param str a simplified-JSON string representing a Map<String, String>
      * @return Map<String, String> represented by [str]
      */
-    fun destringifyOneMap(str: String): Map<String, String> {
+    fun deserializeOneMap(str: String): Map<String, String> {
         return str
             .split(PAIR_SEPARATOR_CHAR)
             .associate {
@@ -83,12 +83,12 @@ class SharedPreferencesService(private val context: Context) {
      * @param str a simplified-JSON string representing a Map<String, Map<String, String>>
      * @return Map<String, Map<String, String>> represented by [str]
      */
-    fun destringifyMaps(str: String): Map<String, Map<String, String>> {
+    fun deserializeMapOfMaps(str: String): Map<String, Map<String, String>> {
         return str
             .split(MAP_SEPARATOR_CHAR)
             .associate {
                 val (key, value, _) = it.split(MAP_NAME_SEPARATOR_CHAR) + listOf("", "")
-                key to destringifyOneMap(value)
+                key to deserializeOneMap(value)
             }
     }
 }

@@ -11,7 +11,7 @@ import com.esms.services.engines.CryptographyEngine
  */
 class CaesarCipherEngine(parameters: String) : CryptographyEngine {
     // Holds the number of positions to shift the characters in the Caesar cipher
-    private var shift: Int = parameters.toIntOrNull() ?: 0
+    private var shiftAmount: Int = parameters.toIntOrNull() ?: 0
 
     /**
      * Encrypts the provided text using the Caesar cipher.
@@ -22,7 +22,7 @@ class CaesarCipherEngine(parameters: String) : CryptographyEngine {
      */
     override fun encrypt(text: String): String {
         return text.map { char ->
-            shiftChar(char, shift)
+            shiftChar(char, shiftAmount)
         }.joinToString("")
     }
 
@@ -35,7 +35,7 @@ class CaesarCipherEngine(parameters: String) : CryptographyEngine {
      */
     override fun decrypt(encryptedText: String): String {
         return encryptedText.map { char ->
-            shiftChar(char, -shift)
+            shiftChar(char, -shiftAmount)
         }.joinToString("")
     }
 
@@ -44,13 +44,13 @@ class CaesarCipherEngine(parameters: String) : CryptographyEngine {
      * Wraps around the alphabet and maintains the case of the letter.
      *
      * @param c The character to shift.
-     * @param shift The number of positions to shift the character.
+     * @param shiftAmount The number of positions to shift the character.
      * @return The shifted character.
      */
-    private fun shiftChar(c: Char, shift: Int): Char {
+    private fun shiftChar(c: Char, shiftAmount: Int): Char {
         return if (c.isLetter()) {
             val base = if (c.isUpperCase()) 'A' else 'a'
-            val offset = Math.floorMod(c - base + shift, 26)
+            val offset = Math.floorMod(c - base + shiftAmount, 26)
             base + offset
         } else {
             c
