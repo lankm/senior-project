@@ -1,6 +1,7 @@
 package com.esms.views
 
 import android.widget.Toast
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -13,6 +14,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import com.esms.models.LocalParameters
 import kotlin.system.exitProcess
 
@@ -27,11 +30,15 @@ fun AuthScreen(onAuthGranted: () -> Unit) {
         AlertDialog(
             onDismissRequest = { exitProcess(0) },
             title = { Text(text = "Authenticate") },
-            text = { TextField(
-                value = "⬤".repeat(text.length),
-                onValueChange = { text = it },
-                label = { Text("Password") }
-            )
+            text = {
+                TextField(
+                    value = text,
+                    onValueChange = { text = it },
+                    singleLine = true,
+                    placeholder = {Text("Password")},
+                    visualTransformation = PasswordVisualTransformation('⬤'),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                )
             },
             confirmButton = {
                 Button(
