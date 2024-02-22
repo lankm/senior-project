@@ -330,7 +330,7 @@ class Parameters (application: Application) : AndroidViewModel(application){
                             save()
                         }
                     },
-                    currentState = Color(customColorsMap[it]!!.toInt())
+                    currentState = mutableStateOf(Color(customColorsMap[it]!!.toInt()))
                 )
             }.toTypedArray()
     }
