@@ -3,8 +3,11 @@ package com.esms
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.esms.theme.EsmsTheme
 
@@ -36,7 +39,11 @@ class MainActivity : ComponentActivity() {
 // NavGraph
 @Composable
 fun Navigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "permissions") {
+    NavHost(
+        navController = navController,
+        startDestination = "permissions",
+        modifier = Modifier.background(MaterialTheme.colors.background)
+    ) {
         composable("permissions") {
             PermissionsScreen(
                 onPermissionGranted = {
