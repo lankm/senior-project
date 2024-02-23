@@ -3,7 +3,6 @@ package com.esms.views.contacts.search
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -19,7 +18,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun SearchBar(state: MutableState<Boolean>, filterString: MutableState<String>) {
-    val padding = 10.dp
+    val padding = 8.dp
     if(state.value){
         Row (
             verticalAlignment = Alignment.CenterVertically,
@@ -28,9 +27,9 @@ fun SearchBar(state: MutableState<Boolean>, filterString: MutableState<String>) 
                 .fillMaxWidth()
                 .background(MaterialTheme.colors.surface)
                 .height(60.dp)
-                .padding(5.dp)
+                .padding(padding)
         ) {
-            SearchButton(state)
+            SearchButton(state, filterString)
             BasicTextField(
                 value = filterString.value,
                 onValueChange = {filterString.value = it.lowercase()},
@@ -41,7 +40,6 @@ fun SearchBar(state: MutableState<Boolean>, filterString: MutableState<String>) 
                         color = MaterialTheme.colors.background
                     )
                     .fillMaxWidth()
-                    .fillMaxHeight(.85F)
                     .padding(padding),
             )
         }

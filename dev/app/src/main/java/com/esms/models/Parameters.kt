@@ -1,13 +1,14 @@
 package com.esms.models
 
-import android.content.Context
+import android.app.Application
 import androidx.compose.material.Colors
 import androidx.compose.material.darkColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import com.esms.services.CryptographyEngineGenerator
 import com.esms.services.SharedPreferencesService
 import com.esms.services.engines.CryptographyEngine
@@ -19,27 +20,26 @@ import com.esms.views.parameters.selectors.OptionsSelector
 import com.esms.views.parameters.selectors.SectionMarker
 import java.lang.Long.parseLong
 
-class Parameters (context: Context) : ViewModel(){
+class Parameters (application: Application) : AndroidViewModel(application){
     // Constants
     val DEFAULT_ENCRYPTION_ALGORITHM = "AES"
     val DEFAULT_ENCRYPTION_PARAMETERS = "insecure"
-    val DEFAULT_LABEL = "(Default)"
+    val DEFAULT_LABEL = "Default"
 
     // Services
     private val engineGen = CryptographyEngineGenerator()
-    private val saveSystem = SharedPreferencesService(context)
+    private val saveSystem = SharedPreferencesService(application.applicationContext)
+    val app = application
 
     // Ephemeral Params
     var loaded = mutableStateOf(false)
     var currentContact = mutableStateOf<PhoneContact?>(null)
         private set
 
-    val showSelectors = mutableStateOf(true)
-
     var currentEncryptionEngine = mutableStateOf<CryptographyEngine>(PlainTextEngine(""))
         private set
-    fun setCurrentEncryptionEngine(number: String){
-        currentEncryptionEngine.value = engineGen.createEngine(getEncryptionAlgorithmFor(number), getEncryptionParametersFor(number))
+    fun setCurrentEncryptionEngineFromNumber(number: String){
+        currentEncryptionEngine.value = engineGen.createEngine(getEncryptionAlgorithmForNumber(number), getEncryptionParametersForNumber(number))
     }
 
     private var currentMessageAdder = mutableStateOf<((SMSMessage) -> Unit)?>(null)
@@ -52,37 +52,37 @@ class Parameters (context: Context) : ViewModel(){
 
     // Saved Params
     private var numberToEncryptionAlgorithm = mutableMapOf<String, String>()
-    private fun getEncryptionAlgorithmFor(number: String?) : String{
+    private fun getEncryptionAlgorithmForNumber(number: String?) : String{
         return numberToEncryptionAlgorithm[number] ?: numberToEncryptionAlgorithm[""] ?: DEFAULT_ENCRYPTION_ALGORITHM
     }
 
     private var numberToEncryptionParameters = mutableMapOf<String, String>()
-    private fun getEncryptionParametersFor(number: String?) : String {
+    private fun getEncryptionParametersForNumber(number: String?) : String {
         return numberToEncryptionParameters[number] ?: numberToEncryptionParameters[""] ?: DEFAULT_ENCRYPTION_PARAMETERS
     }
 
     private var saveEncryptionParameter = mutableStateOf(DEFAULT_ENCRYPTION_PARAMETERS)
 
     private var numberToNickname = mutableMapOf<String, String>()
-    fun getNicknameFor(number: String, default: String) : String {
+    fun getNicknameForNumber(number: String, default: String) : String {
         return numberToNickname[number] ?: default
     }
-    fun setNicknameFor(number: String, nickname: String) {
+    fun setNicknameForNumber(number: String, nickname: String) {
         numberToNickname[number] = nickname
     }
 
     private var numberToLastMessageTime = mutableMapOf<String, String>()
-    fun getLastMessageTimeFor(number: String) : Long {
+    fun getLastMessageTimeForNumber(number: String) : Long {
         return parseLong(numberToLastMessageTime[number] ?: "0")
     }
-    fun setLastMessageTimeFor(number: String, timestamp: Long) {
-        if(getLastMessageTimeFor(number) < timestamp){
+    fun setLastMessageTimeForNumber(number: String, timestamp: Long) {
+        if(getLastMessageTimeForNumber(number) < timestamp){
             numberToLastMessageTime[number] = timestamp.toString()
-            persist()
+            save()
         }
     }
 
-    var theme = mutableStateOf("System"); // Light, Dark, System, Custom
+    var theme = mutableStateOf("System") // Light, Dark, System, Custom
 
     private val customColors = mutableStateOf(
         darkColors(
@@ -104,11 +104,11 @@ class Parameters (context: Context) : ViewModel(){
             onError = Color(0xFF111111),
         )
     )
-    private lateinit var customColorsMap: MutableMap<String, String>
+    private val customColorsMap = mutableMapOf<String, String>()
     fun getCustomColors() : Colors {
-        return customColors.value;
+        return customColors.value
     }
-    private fun setCustomColorsWithMap(stringMap: Map<String, String>) {
+    private fun setCustomColorsFromMap(stringMap: Map<String, String>) {
         if(stringMap.isEmpty())
             return
         customColors.value = darkColors(
@@ -129,7 +129,9 @@ class Parameters (context: Context) : ViewModel(){
             error = Color(stringMap["error"]!!.toInt()),
             onError = Color(stringMap["onError"]!!.toInt()),
         )
-        customColorsMap = stringMap.toMutableMap()
+        for (entry in stringMap.entries) {
+            customColorsMap[entry.key] = entry.value
+        }
     }
     private fun getCustomColorsMap() : Map<String, String>{
         return mapOf(
@@ -157,7 +159,7 @@ class Parameters (context: Context) : ViewModel(){
     val THEME = "5"
     val CUSTOM_THEME = "6"
 
-    fun persist() {
+    fun save() {
         val maps = mapOf(
             ENCRYPTION_ALGORITHMS to numberToEncryptionAlgorithm.toMap(),
             ENCRYPTION_PARAMETERS to numberToEncryptionParameters.toMap(),
@@ -168,7 +170,7 @@ class Parameters (context: Context) : ViewModel(){
             CUSTOM_THEME to getCustomColorsMap(),
             )
         val saveEncryptor = engineGen.createEngine("AES", saveEncryptionParameter.value)
-        val saveString = saveSystem.stringifyMapMap(maps)
+        val saveString = saveSystem.serializeMapOfMaps(maps)
         val encryptedSaveString = saveEncryptor.encrypt(saveString)
         saveSystem.write(encryptedSaveString)
     }
@@ -179,7 +181,7 @@ class Parameters (context: Context) : ViewModel(){
         try {
             if(decryptedString == savedString && savedString != "")
                 throw Exception()
-            val maps = saveSystem.destringifyMaps(decryptedString)
+            val maps = saveSystem.deserializeMapOfMaps(decryptedString)
 
             numberToEncryptionAlgorithm = maps[ENCRYPTION_ALGORITHMS]?.toMutableMap() ?: mutableMapOf("" to DEFAULT_ENCRYPTION_ALGORITHM)
             numberToEncryptionParameters = maps[ENCRYPTION_PARAMETERS]?.toMutableMap() ?: mutableMapOf("" to DEFAULT_ENCRYPTION_PARAMETERS)
@@ -187,21 +189,21 @@ class Parameters (context: Context) : ViewModel(){
             numberToNickname = maps[NICKNAMES]?.toMutableMap() ?: mutableMapOf()
             numberToLastMessageTime = maps[TIMESTAMPS]?.toMutableMap() ?: mutableMapOf()
             theme.value = maps.getOrDefault(THEME, mapOf("" to "System")).getOrDefault("", "System")
-            setCustomColorsWithMap(maps.getOrDefault(CUSTOM_THEME, mapOf()))
+            setCustomColorsFromMap(maps.getOrDefault(CUSTOM_THEME, getCustomColorsMap()))
 
             loaded.value = true
         } catch (_: Exception){}
     }
 
     // Editable Parameters
-    fun persistentEditableParams(currentContact: PhoneContact?) : List<@Composable ()->Unit> {
-        val globalParams = currentContact == null
+    fun getEditableParameterElementsList() : List<@Composable ()->Unit> {
+        val globalParams = currentContact.value == null
         return listOfNotNull(
             SectionMarker("Contact Specific Settings", isNull = globalParams),
-            nicknameSelector(currentContact),
+            nicknameSelector(currentContact.value),
             SectionMarker("Encryption Settings", isNull = globalParams),
-            encryptionAlgorithmSelector(currentContact),
-            encryptionParameterSelector(currentContact),
+            encryptionAlgorithmSelector(currentContact.value),
+            encryptionParameterSelector(currentContact.value),
             SectionMarker("Default Encryption Settings"),
             defaultEncryptionAlgorithmSelector(),
             defaultEncryptionParameterSelector(),
@@ -222,13 +224,12 @@ class Parameters (context: Context) : ViewModel(){
                     numberToEncryptionAlgorithm.remove(currentContact.number)
                 else
                     numberToEncryptionAlgorithm[currentContact.number] = algorithm
-                persist()
-                setCurrentEncryptionEngine(currentContact.number)
+                save()
+                setCurrentEncryptionEngineFromNumber(currentContact.number)
             }},
-            options = listOf("${getEncryptionAlgorithmFor("")} $DEFAULT_LABEL") +
+            options = listOf("$DEFAULT_LABEL (${getEncryptionAlgorithmForNumber("")})") +
                       CryptographyEngineGenerator().getRegisteredEngines(),
-            currentState = getEncryptionAlgorithmFor(currentContact.number) +
-                           defaultLabelIfDefault(currentContact)
+            currentState = defaultLabelIfDefault(currentContact, getEncryptionAlgorithmForNumber(currentContact.number))
         )
     }
     private fun encryptionParameterSelector(currentContact: PhoneContact?) : (@Composable ()->Unit)? {
@@ -238,10 +239,10 @@ class Parameters (context: Context) : ViewModel(){
             name = "Encryption Parameter",
             setter = { algorithm: String -> run {
                 numberToEncryptionParameters[currentContact.number] = algorithm
-                persist()
-                setCurrentEncryptionEngine(currentContact.number)
+                save()
+                setCurrentEncryptionEngineFromNumber(currentContact.number)
             }},
-            currentState = getEncryptionParametersFor(currentContact.number)
+            currentState = getEncryptionParametersForNumber(currentContact.number)
         )
     }
     private fun defaultEncryptionAlgorithmSelector() : @Composable ()->Unit{
@@ -249,11 +250,11 @@ class Parameters (context: Context) : ViewModel(){
             name = "Default Encryption Algorithm",
             setter = { algorithm: String -> run {
                 numberToEncryptionAlgorithm[""] = algorithm
-                persist()
-                setCurrentEncryptionEngine("")
+                save()
+                setCurrentEncryptionEngineFromNumber("")
             }},
             options = CryptographyEngineGenerator().getRegisteredEngines(),
-            currentState = getEncryptionAlgorithmFor("")
+            currentState = getEncryptionAlgorithmForNumber("")
         )
     }
     private fun defaultEncryptionParameterSelector() : @Composable ()->Unit {
@@ -261,10 +262,10 @@ class Parameters (context: Context) : ViewModel(){
             name = "Default Encryption Parameter",
             setter = { algorithm: String -> run {
                 numberToEncryptionParameters[""] = algorithm
-                persist()
-                setCurrentEncryptionEngine("")
+                save()
+                setCurrentEncryptionEngineFromNumber("")
             }},
-            currentState = getEncryptionParametersFor("")
+            currentState = getEncryptionParametersForNumber("")
         )
     }
     private fun globalEncryptionKeySelector() : @Composable ()->Unit {
@@ -272,7 +273,7 @@ class Parameters (context: Context) : ViewModel(){
             name = "Save Encryption Key",
             setter = { key: String -> run {
                 saveEncryptionParameter.value = key
-                persist()
+                save()
             }},
             currentState = saveEncryptionParameter.value,
             comment = " (\"$DEFAULT_ENCRYPTION_PARAMETERS\" = no auth screen)"
@@ -286,12 +287,12 @@ class Parameters (context: Context) : ViewModel(){
             name = "Nickname",
             setter = { key: String -> run {
                 if(key.isNotBlank())
-                    setNicknameFor(currentState.number, key)
+                    setNicknameForNumber(currentState.number, key)
                 else
                     numberToNickname.remove(currentState.number)
-                persist()
+                save()
             }},
-            currentState = getNicknameFor(currentState.number, currentState.name),
+            currentState = getNicknameForNumber(currentState.number, currentState.name),
             comment = " (Leave this blank -> Reset to ${currentState.name})"
         )
     }
@@ -300,7 +301,7 @@ class Parameters (context: Context) : ViewModel(){
             name = "Color Theme",
             setter = { key: String -> run {
                 theme.value = key
-                persist()
+                save()
             }},
             currentState = theme.value,
             options = listOf("System", "Dark", "Light", "Custom")
@@ -319,20 +320,19 @@ class Parameters (context: Context) : ViewModel(){
                 "surface",
                 "onSurface",
                 "error"
-            ).map { predefinedColorSelector(it) }.toTypedArray()
-    }
-        private fun predefinedColorSelector(name: String) : @Composable () -> Unit {
-        return ColorSelector(
-            name,
-            setter = {
-                color: Color -> run {
-                    customColorsMap[name] = color.toArgb().toString()
-                    setCustomColorsWithMap(customColorsMap)
-                    persist()
-                }
-            },
-            currentState = Color(customColorsMap[name]!!.toInt())
-        )
+            ).map {
+                ColorSelector(
+                    it,
+                    setter = {
+                        color: Color -> run {
+                            customColorsMap[it] = color.toArgb().toString()
+                            setCustomColorsFromMap(customColorsMap.toMap())
+                            save()
+                        }
+                    },
+                    currentState = mutableStateOf(Color(customColorsMap[it]!!.toInt()))
+                )
+            }.toTypedArray()
     }
 
     // Initialization
@@ -341,7 +341,14 @@ class Parameters (context: Context) : ViewModel(){
     }
 
     // Private Helper Functions
-    private fun defaultLabelIfDefault(currentContact: PhoneContact): String {
-        return if (!numberToEncryptionAlgorithm.containsKey(currentContact.number)) " $DEFAULT_LABEL" else ""
+    private fun defaultLabelIfDefault(currentContact: PhoneContact, currentAlgorithm: String): String {
+        return if (!numberToEncryptionAlgorithm.containsKey(currentContact.number))
+            "$DEFAULT_LABEL ($currentAlgorithm)"
+        else
+            currentAlgorithm
     }
+}
+
+val LocalParameters = staticCompositionLocalOf<Parameters> {
+    error("Parameters ViewModel not provided")
 }

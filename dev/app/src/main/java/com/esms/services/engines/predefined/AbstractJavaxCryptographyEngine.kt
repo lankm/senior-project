@@ -11,34 +11,26 @@ abstract class AbstractJavaxCryptographyEngine : CryptographyEngine {
     protected abstract val secretKey: SecretKey
     protected abstract val cipherAlgorithm: String
     protected abstract val ivSize: Int
-    protected var doIVs: Boolean = true
 
     private fun generateIv(): ByteArray = ByteArray(ivSize).apply { SecureRandom().nextBytes(this) }
 
     override fun encrypt(text: String): String {
         val cipher = Cipher.getInstance(cipherAlgorithm)
-        val iv = if (doIVs) generateIv() else ByteArray(ivSize)
+        val iv = generateIv()
         val ivSpec = IvParameterSpec(iv)
 
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec)
         val encryptedBytes = cipher.doFinal(text.toByteArray())
 
-        return if (doIVs) {
-            val combined = iv + encryptedBytes
-            Base64.getEncoder().encodeToString(combined)
-        } else {
-            Base64.getEncoder().encodeToString(encryptedBytes)
-        }
+        val combined = iv + encryptedBytes
+        return Base64.getEncoder().encodeToString(combined)
     }
 
     override fun decrypt(encryptedText: String): String {
         val combined = Base64.getDecoder().decode(encryptedText)
 
-        val (iv, encryptedBytes) = if (doIVs) {
-            combined.copyOfRange(0, ivSize) to combined.copyOfRange(ivSize, combined.size)
-        } else {
-            ByteArray(ivSize) to combined
-        }
+        val iv = combined.copyOfRange(0, ivSize)
+        val encryptedBytes = combined.copyOfRange(ivSize, combined.size)
 
         val ivSpec = IvParameterSpec(iv)
         val cipher = Cipher.getInstance(cipherAlgorithm)

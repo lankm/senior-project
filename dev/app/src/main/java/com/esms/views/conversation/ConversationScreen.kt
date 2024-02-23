@@ -6,28 +6,16 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.esms.models.Parameters
 import com.esms.views.conversation.history.ConversationHistory
 
 @Composable
-fun ConversationScreen(navController: NavController, params: Parameters) {
+fun ConversationScreen(navController: NavController) {
     Scaffold (
-        topBar = { ConversationTopBar(navController, params) },
+        topBar = { ConversationTopBar(navController) },
         content = { innerPadding -> Box(modifier = Modifier.padding(innerPadding)) {
-            ConversationHistory(navController, params)
+            ConversationHistory()
         }},
-        bottomBar = {MessageInput(LocalContext.current, params = params)}
-    )
-}
-
-@Preview
-@Composable
-fun MessagesScreenPreview() {
-    ConversationScreen(
-        navController = rememberNavController(),
-        params = Parameters(LocalContext.current)
+        bottomBar = {MessageInput(LocalContext.current)}
     )
 }

@@ -65,7 +65,7 @@ fun ModalSelector(
                     title = { Text(text = name) },
                     text = {
                         Column(verticalArrangement = Arrangement.SpaceEvenly) {
-                            contents.forEach { Row() { it.invoke() } }
+                            contents.forEach { Row { it.invoke() } }
                         }
                     },
                     confirmButton = {

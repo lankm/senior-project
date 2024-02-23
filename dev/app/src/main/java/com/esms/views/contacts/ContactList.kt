@@ -24,18 +24,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.esms.models.Parameters
+import com.esms.models.LocalParameters
 import com.esms.models.PhoneContact
 import com.esms.services.readContacts
 
 @Composable
-fun ContactList(navController: NavController, params: Parameters, filterString: MutableState<String>) {
-    // retrieve the list of contacts
+fun ContactList(navController: NavController, filterString: MutableState<String>) {
+    val params = LocalParameters.current
     val context = LocalContext.current
+    // retrieve the list of contacts
     val allContacts = remember { mutableListOf<PhoneContact>() }
     LaunchedEffect(key1 = Unit) {
         val contact = readContacts(context = context)
-        allContacts += contact.sortedBy { -params.getLastMessageTimeFor(it.number) }
+        allContacts += contact.sortedBy { -params.getLastMessageTimeForNumber(it.number) }
     }
 
     // display the list of contacts
@@ -44,7 +45,7 @@ fun ContactList(navController: NavController, params: Parameters, filterString: 
         modifier = Modifier.fillMaxSize(),
         state = scrollState
     ) {
-        allContacts.filter { params.getNicknameFor(it.number, it.name).lowercase().contains(filterString.value) }.forEach { contact ->
+        allContacts.filter { params.getNicknameForNumber(it.number, it.name).lowercase().contains(filterString.value) }.forEach { contact ->
             item {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -59,11 +60,11 @@ fun ContactList(navController: NavController, params: Parameters, filterString: 
                         modifier = Modifier
                             .clickable {
                                 params.currentContact.value = contact
-                                params.setCurrentEncryptionEngine(contact.number)
+                                params.setCurrentEncryptionEngineFromNumber(contact.number)
                                 navController.navigate("conversation")
                             }
                     ) {
-                        ContactBox(contact, params)
+                        ContactBox(contact)
                     }
 
 

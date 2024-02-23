@@ -3,12 +3,17 @@ package com.esms
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.esms.theme.EsmsTheme
 
 import androidx.navigation.compose.*
 import androidx.navigation.*
+import com.esms.models.LocalParameters
 import com.esms.models.Parameters
 import com.esms.views.AuthScreen
 import com.esms.views.PermissionsScreen
@@ -20,10 +25,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val params = Parameters(LocalContext.current)
-            EsmsTheme (params) {
-                val navController = rememberNavController()
-                Navigation(navController, params)
+            val params = viewModel<Parameters>()
+            CompositionLocalProvider(LocalParameters provides params) {
+                EsmsTheme {
+                    val navController = rememberNavController()
+                    Navigation(navController)
+                }
             }
         }
     }
@@ -31,8 +38,12 @@ class MainActivity : ComponentActivity() {
 
 // NavGraph
 @Composable
-fun Navigation(navController: NavHostController, params: Parameters) {
-    NavHost(navController = navController, startDestination = "permissions") {
+fun Navigation(navController: NavHostController) {
+    NavHost(
+        navController = navController,
+        startDestination = "permissions",
+        modifier = Modifier.background(MaterialTheme.colors.background)
+    ) {
         composable("permissions") {
             PermissionsScreen(
                 onPermissionGranted = {
@@ -47,26 +58,22 @@ fun Navigation(navController: NavHostController, params: Parameters) {
                     navController.popBackStack()
                     navController.navigate("application")
                 },
-                params = params
             )
         }
         navigation(startDestination = "contacts", route = "application") {
             composable("contacts") {
                 ContactsScreen(
                     navController = navController,
-                    params = params
                 )
             }
             composable("conversation") {
                 ConversationScreen(
                     navController = navController,
-                    params = params
                 )
             }
             composable("parameters") {
                 ParametersScreen(
                     navController = navController,
-                    params = params
                 )
             }
         }

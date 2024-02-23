@@ -17,12 +17,14 @@ import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 fun FreeSelector(
@@ -30,6 +32,7 @@ fun FreeSelector(
     setter: (String)->Unit,
     currentState: String,
     comment: String = "",
+    tint: MutableState<Color>? = null
 ): @Composable () -> Unit{
     return {
         Row(
@@ -58,7 +61,7 @@ fun FreeSelector(
                 Icon(
                     imageVector = Icons.Default.Edit,
                     contentDescription = "Edit $name",
-                    tint = MaterialTheme.colors.onBackground
+                    tint = tint?.value ?: MaterialTheme.colors.onBackground
                 )
             }
             var text by remember { mutableStateOf(currentState) }
@@ -71,7 +74,7 @@ fun FreeSelector(
                         TextField(
                             value = text,
                             onValueChange = { text = it },
-                            label = { Text("Set value" + comment) }
+                            label = { Text("Set value$comment") }
                         )
                     },
                     confirmButton = {

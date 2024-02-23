@@ -1,11 +1,15 @@
 package com.esms.views
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,10 +33,17 @@ val permissions = listOf(
 fun PermissionsScreen(onPermissionGranted: () -> Unit) {
     val permissionStates = rememberMultiplePermissionsState(permissions)
 
-    if(permissionStates.allPermissionsGranted) {
-        onPermissionGranted()
-    } else {
-        AskPermission(permissionStates.revokedPermissions.first())
+    // This is just for the background coloring
+    Box(modifier = Modifier
+        .background(MaterialTheme.colors.surface)
+        .fillMaxWidth()
+        .fillMaxHeight()
+    ) {
+        if(permissionStates.allPermissionsGranted) {
+            onPermissionGranted()
+        } else {
+            AskPermission(permissionStates.revokedPermissions.first())
+        }
     }
 }
 
@@ -52,6 +63,7 @@ fun AskPermission(permissionState: PermissionState) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(20.dp),
+            color = MaterialTheme.colors.onSurface,
             text = textToShow,
             textAlign = TextAlign.Center
         )
