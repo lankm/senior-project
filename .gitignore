@@ -1,1 +1,5 @@
 .idea
+*.jks
+*.apk
+
+dev/app/release/output-metadata.json
